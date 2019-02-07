@@ -175,6 +175,29 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
+  
+  struct list_elem *list_front (struct list *);
+
+
+  struct thread * next = list_entry(list_front(blocked_list)); 
+  struct thread *start = next;
+  if(next-> minStartTime < timer_ticks ()){
+      next = list_entry (list_pop_front (&ready_list), struct thread, elem);    
+      thread_unblock(next);
+
+  }
+  //possibility of infinte loop?
+  list_push_back (&ready_list, &next->elem);
+  next = list_entry (list_pop_front (&ready_list), struct thread, elem);
+  if(next == start)
+  return idle_thread;  
+
+  if()
+
+  else{
+    
+    }
+
   thread_tick ();
 }
 
