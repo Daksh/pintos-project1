@@ -96,7 +96,7 @@ timer_sleep (int64_t ticks)
 //  while (timer_elapsed (start) < ticks)
 //    thread_yield ();
     struct thread *cur = thread_current ();
-    cur->minStartTime = start;
+    cur->minStartTime = start+ticks;
     thread_yield();
 }
 
