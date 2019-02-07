@@ -8,7 +8,8 @@
 #include "threads/interrupt.h"
 #include "threads/synch.h"
 #include "threads/thread.h"
-  
+#include <threads/thread.c>
+#include <list.h>  
 /* See [8254] for hardware details of the 8254 timer chip. */
 
 #if TIMER_FREQ < 19
@@ -91,13 +92,17 @@ void
 timer_sleep (int64_t ticks) 
 {
   int64_t start = timer_ticks ();
+  struct thread *cur = thread_current ();
+  cur->minStartTime = start+ticks;
+  intr_disable();
+  list_push_back (&blocked_list, &cur->elem);
+  thread_block();
+  intr_enable();
 
   ASSERT (intr_get_level () == INTR_ON);
 //  while (timer_elapsed (start) < ticks)
 //    thread_yield ();
-    struct thread *cur = thread_current ();
-    cur->minStartTime = start+ticks;
-    thread_yield();
+  thread_yield();
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -176,27 +181,25 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   
-  struct list_elem *list_front (struct list *);
-
-
-  struct thread * next = list_entry(list_front(blocked_list)); 
+  struct thread * next = list_entry(list_front(blocked_list));
   struct thread *start = next;
+  
   if(next-> minStartTime < timer_ticks ()){
-      next = list_entry (list_pop_front (&ready_list), struct thread, elem);    
+      next = list_entry (list_pop_front (&blocked_list), struct thread, elem);    
       thread_unblock(next);
 
   }
   //possibility of infinte loop?
-  list_push_back (&ready_list, &next->elem);
-  next = list_entry (list_pop_front (&ready_list), struct thread, elem);
-  if(next == start)
-  return idle_thread;  
+  // list_push_back (&ready_list, &next->elem);
+  // next = list_entry (list_pop_front (&ready_list), struct thread, elem);
+  // if(next == start)
+  // return idle_thread;  
 
-  if()
+  // if()
 
-  else{
+  // else{
     
-    }
+  //   }
 
   thread_tick ();
 }
