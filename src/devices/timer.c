@@ -86,17 +86,12 @@ timer_elapsed (int64_t then)
   return timer_ticks () - then;
 }
 
-// static bool MINSTARTvalue_less (const struct list_elem *, const struct list_elem *,
-                        // void *);
-
 /* Returns true if value A is less than value B, false
    otherwise. */
 static bool
 MINSTARTvalue_less (const struct list_elem *a_, const struct list_elem *b_,
             void *aux UNUSED) 
 {
-  // const struct value *a = list_entry (a_, struct value, elem);
-  // const struct value *b = list_entry (b_, struct value, elem);  
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
   return a_t->minStartTime < b_t->minStartTime;
@@ -115,19 +110,14 @@ timer_sleep (int64_t ticks)
   //setting its (minStartTime) value for this thread to start+ticks
   struct thread *cur = thread_current();
   cur->minStartTime = start+ticks;
-  //printf("tid:%d; setting minStartTime to %lld\n", cur->tid, cur->minStartTime);
 
   intr_disable();
-  // list_push_back (&blocked_list, &cur->elem);
+
+  //as start+ticks will not be sorted by default
   list_insert_ordered (&blocked_list, &cur->elem, MINSTARTvalue_less, NULL);
+
   thread_block();
   intr_enable();
-
-  // while (timer_elapsed (start) < ticks){ 
-  //   printf("DAKSH I AM YIELDING My THREAD\n");
-  //   printf("Thread:%d; I have minStartTime: %lld\n",cur->tid,cur->minStartTime);
-  //   thread_yield ();
-  // }
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -207,12 +197,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
 
   if(!list_empty(&blocked_list)){
-    //printf("THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO\n");
     struct thread * next = list_entry(list_begin(&blocked_list),struct thread, elem);
     
-    //printf("tid:%d; minStartTime:%lld; timer_ticks:%lld\n", next->tid, next->minStartTime, timer_ticks());
     while(!list_empty(&blocked_list) && next-> minStartTime <= timer_ticks ()){
-        //printf("Popping the top thread blocked_list\n");
         next = list_entry (list_pop_front (&blocked_list), struct thread, elem);    
         thread_unblock(next);
         if(!list_empty(&blocked_list)) 
