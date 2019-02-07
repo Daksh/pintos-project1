@@ -97,8 +97,8 @@ MINSTARTvalue_less (const struct list_elem *a_, const struct list_elem *b_,
 {
   // const struct value *a = list_entry (a_, struct value, elem);
   // const struct value *b = list_entry (b_, struct value, elem);  
-  struct thread * a_t = a;
-  struct thread * b_t = b;
+  struct thread * a_t = a_;
+  struct thread * b_t = b_;
   return a_t->minStartTime < b_t->minStartTime;
 }
 
@@ -118,7 +118,7 @@ timer_sleep (int64_t ticks)
 
   intr_disable();
   // list_push_back (&blocked_list, &cur->elem);
-  list_insert_ordered (&blocked_list, &cur->elem, value_less, NULL);
+  list_insert_ordered (&blocked_list, &cur->elem, MINSTARTvalue_less, NULL);
   thread_block();
   intr_enable();
 
@@ -208,11 +208,11 @@ timer_interrupt (struct intr_frame *args UNUSED)
   if(!list_empty(&blocked_list)){
     printf("THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO\n");
     struct thread * next = list_entry(list_begin(&blocked_list),struct thread, elem);
-    struct thread * start = next;
+    
+    // struct thread * start = next;
+    // do{
+    // } while(next->tid!=start->tid)
 
-    do{
-
-    } while(next->tid!=start->tid)
     // printf("tid:%d; minStartTime:%lld; timer_ticks:%lld\n", next->tid, next->minStartTime, timer_ticks());
     if(next-> minStartTime < timer_ticks ()){
         // printf("Popping the top thread blocked_list\n");
