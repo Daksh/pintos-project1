@@ -1,0 +1,552 @@
+qemu-system-i386 -device isa-debug-exit -hda /tmp/l4muSM3Mb7.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading............
+Kernel command line: run alarm-simultaneous
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  391,987,200 loops/s.
+Boot complete.
+Executing 'alarm-simultaneous':
+(alarm-simultaneous) begin
+(alarm-simultaneous) Creating 3 threads to sleep 5 times each.
+(alarm-simultaneous) Each thread sleeps 10 ticks each time.
+(alarm-simultaneous) Within an iteration, all threads should wake up on the same tick.
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:26; timer_ticks:26
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:26; timer_ticks:27
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:28
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:29
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:30
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:31
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:32
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:33
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:34
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:35
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:36
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:37
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:38
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:39
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:40
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:41
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:42
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:43
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:44
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:45
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:46
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:47
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:48
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:49
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:50
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:51
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:52
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:53
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:54
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:55
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:56
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:57
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:58
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:59
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:60
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:61
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:62
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:63
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:64
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:65
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:66
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:67
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:68
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:69
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:70
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:71
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:72
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:73
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:74
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:75
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:76
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:77
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:78
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:79
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:80
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:81
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:82
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:83
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:84
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:85
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:86
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:87
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:88
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:89
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:90
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:91
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:92
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:93
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:94
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:95
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:96
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:97
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:98
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:99
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:100
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:101
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:102
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:103
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:104
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:105
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:106
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:107
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:108
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:109
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:110
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:111
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:112
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:113
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:114
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:115
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:116
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:117
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:118
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:119
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:120
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:121
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:122
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:123
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:124
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:125
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:126
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:127
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:128
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:129
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:130
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:131
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:132
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:133
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:134
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:135
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:135; timer_ticks:136
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:137
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:138
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:139
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:140
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:141
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:142
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:143
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:144
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:145
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:145; timer_ticks:146
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:147
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:148
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:149
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:150
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:151
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:152
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:153
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:154
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:155
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:155; timer_ticks:156
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:157
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:158
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:159
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:160
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:161
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:162
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:163
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:164
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:165
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:165; timer_ticks:166
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:167
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:168
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:169
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:170
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:171
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:172
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:173
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:174
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:175
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:3; minStartTime:175; timer_ticks:176
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+Popping the top thread blocked_list
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:177
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:178
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:179
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:180
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:181
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:182
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:183
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:184
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:185
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:186
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:187
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:188
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:189
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:190
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:191
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:192
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:193
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:194
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:195
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:196
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:197
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:198
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:199
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:200
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:201
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:202
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:203
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:204
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:205
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:206
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:207
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:208
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:209
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:210
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:211
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:212
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:213
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:214
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:215
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:216
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:217
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:218
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:219
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:220
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:221
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:222
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:223
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:224
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:225
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:226
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:227
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:228
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:229
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:230
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:231
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:232
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:233
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:234
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:235
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:236
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:237
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:238
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:239
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:240
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:241
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:242
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:243
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:244
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:245
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:246
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:247
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:248
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:249
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:250
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:251
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:252
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:253
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:254
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:255
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:256
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:257
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:258
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:259
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:260
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:261
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:262
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:263
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:264
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:265
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:266
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:267
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:268
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:269
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:270
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:271
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:272
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:273
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:274
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:275
+THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO
+tid:1; minStartTime:275; timer_ticks:276
+Popping the top thread blocked_list
+(alarm-simultaneous) iteration 0, thread 0: woke up after 12 ticks
+(alarm-simultaneous) iteration 0, thread 1: woke up 0 ticks later
+(alarm-simultaneous) iteration 0, thread 2: woke up 0 ticks later
+(alarm-simultaneous) iteration 1, thread 0: woke up 10 ticks later
+(alarm-simultaneous) iteration 1, thread 1: woke up 0 ticks later
+(alarm-simultaneous) iteration 1, thread 2: woke up 0 ticks later
+(alarm-simultaneous) iteration 2, thread 0: woke up 10 ticks later
+(alarm-simultaneous) iteration 2, thread 1: woke up 0 ticks later
+(alarm-simultaneous) iteration 2, thread 2: woke up 0 ticks later
+(alarm-simultaneous) iteration 3, thread 0: woke up 10 ticks later
+(alarm-simultaneous) iteration 3, thread 1: woke up 0 ticks later
+(alarm-simultaneous) iteration 3, thread 2: woke up 0 ticks later
+(alarm-simultaneous) iteration 4, thread 0: woke up 10 ticks later
+(alarm-simultaneous) iteration 4, thread 1: woke up 0 ticks later
+(alarm-simultaneous) iteration 4, thread 2: woke up 0 ticks later
+(alarm-simultaneous) end
+Execution of 'alarm-simultaneous' complete.
