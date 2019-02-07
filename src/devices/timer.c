@@ -100,16 +100,16 @@ timer_sleep (int64_t ticks)
   struct thread *cur = thread_current();
   cur->minStartTime = start+ticks;
 
-  // intr_disable();
-  // list_push_back (&blocked_list, &cur->elem);
-  // thread_block();
-  // intr_enable();
+  intr_disable();
+  list_push_back (&blocked_list, &cur->elem);
+  thread_block();
+  intr_enable();
 
-  while (timer_elapsed (start) < ticks){ 
-    // printf("DAKSH I AM YIELDING My THREAD\n");
-    // printf("Thread:%d; I have minStartTime: %lld\n",cur->tid,cur->minStartTime);
-    thread_yield ();
-  }
+  // while (timer_elapsed (start) < ticks){ 
+  //   printf("DAKSH I AM YIELDING My THREAD\n");
+  //   printf("Thread:%d; I have minStartTime: %lld\n",cur->tid,cur->minStartTime);
+  //   thread_yield ();
+  // }
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
