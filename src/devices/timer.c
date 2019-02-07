@@ -115,6 +115,7 @@ timer_sleep (int64_t ticks)
   //setting its (minStartTime) value for this thread to start+ticks
   struct thread *cur = thread_current();
   cur->minStartTime = start+ticks;
+  printf("tid:%d; setting minStartTime to %lld\n", cur->tid, cur->minStartTime);
 
   intr_disable();
   // list_push_back (&blocked_list, &cur->elem);
