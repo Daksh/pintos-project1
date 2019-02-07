@@ -189,10 +189,10 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
 
   if(!list_empty(&blocked_list)){
-    // printf("THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO\n");
+    printf("THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO\n");
     struct thread * next = list_entry(list_begin(&blocked_list),struct thread, elem);
 
-    printf("tid:%d; minStartTime:%lld; timer_ticks:%d\n", next->tid, next->minStartTime, timer_ticks());
+    printf("tid:%d; minStartTime:%lld; timer_ticks:%lld\n", next->tid, next->minStartTime, timer_ticks());
     if(next-> minStartTime < timer_ticks ()){
         printf("Popping the top thread blocked_list\n");
         next = list_entry (list_pop_front (&blocked_list), struct thread, elem);    
