@@ -80,7 +80,7 @@ timer_ticks (void)
 /* Returns the number of timer ticks elapsed since THEN, which
    should be a value once returned by timer_ticks(). */
 int64_t
-timer_elapsed (int64_t then) 
+timer_elapsed (int64_t then)
 {
   return timer_ticks () - then;
 }
@@ -93,8 +93,11 @@ timer_sleep (int64_t ticks)
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
-    thread_yield ();
+//  while (timer_elapsed (start) < ticks)
+//    thread_yield ();
+    struct thread *cur = thread_current ();
+    cur->minStartTime = start;
+    thread_yield();
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be

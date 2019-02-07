@@ -493,8 +493,14 @@ next_thread_to_run (void)
 {
   if (list_empty (&ready_list))
     return idle_thread;
-  else
-    return list_entry (list_pop_front (&ready_list), struct thread, elem);
+  else{
+    struct thread * next = list_entry (list_pop_front (&ready_list), struct thread, elem);
+    while(next-> minStartTime < timer_ticks ()){//possibility of infinte loop?
+      list_push_back (&ready_list, &next->elem);
+      next = list_entry (list_pop_front (&ready_list), struct thread, elem);
+    }
+    return next;
+  }
 }
 
 /* Completes a thread switch by activating the new thread's page
@@ -551,7 +557,7 @@ thread_schedule_tail (struct thread *prev)
    It's not safe to call printf() until thread_schedule_tail()
    has completed. */
 static void
-schedule (void) 
+schedule (void)
 {
   struct thread *cur = running_thread ();
   struct thread *next = next_thread_to_run ();
