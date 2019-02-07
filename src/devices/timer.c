@@ -115,7 +115,7 @@ timer_sleep (int64_t ticks)
   //setting its (minStartTime) value for this thread to start+ticks
   struct thread *cur = thread_current();
   cur->minStartTime = start+ticks;
-  printf("tid:%d; setting minStartTime to %lld\n", cur->tid, cur->minStartTime);
+  //printf("tid:%d; setting minStartTime to %lld\n", cur->tid, cur->minStartTime);
 
   intr_disable();
   // list_push_back (&blocked_list, &cur->elem);
@@ -207,12 +207,12 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
 
   if(!list_empty(&blocked_list)){
-    printf("THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO\n");
+    //printf("THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO\n");
     struct thread * next = list_entry(list_begin(&blocked_list),struct thread, elem);
     
-    printf("tid:%d; minStartTime:%lld; timer_ticks:%lld\n", next->tid, next->minStartTime, timer_ticks());
-    while(!list_empty(&blocked_list) && next-> minStartTime < timer_ticks ()){
-        printf("Popping the top thread blocked_list\n");
+    //printf("tid:%d; minStartTime:%lld; timer_ticks:%lld\n", next->tid, next->minStartTime, timer_ticks());
+    while(!list_empty(&blocked_list) && next-> minStartTime <= timer_ticks ()){
+        //printf("Popping the top thread blocked_list\n");
         next = list_entry (list_pop_front (&blocked_list), struct thread, elem);    
         thread_unblock(next);
         if(!list_empty(&blocked_list)) 
