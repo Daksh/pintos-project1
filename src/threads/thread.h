@@ -108,6 +108,10 @@ struct thread
    Controlled by kernel command-line option "-o mlfqs". */
 extern bool thread_mlfqs;
 
+/* List of processes in THREAD_BLOCKED state, that is, processes
+   that are ready to run but not actually running. */
+struct list blocked_list;
+
 void thread_init (void);
 void thread_start (void);
 

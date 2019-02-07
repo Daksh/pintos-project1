@@ -4,6 +4,7 @@
 #include <round.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <list.h>
 #include "devices/pit.h"
 #include "threads/interrupt.h"
 #include "threads/synch.h"
@@ -93,13 +94,22 @@ timer_sleep (int64_t ticks)
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
+
+  //Have added a new variable in thread structure
+  //setting its (minStartTime) value for this thread to start+ticks
   struct thread *cur = thread_current();
   cur->minStartTime = start+ticks;
-  while (timer_elapsed (start) < ticks){ 
-    printf("DAKSH I AM YIELDING My THREAD\n");
-    printf("Thread:%d; I have minStartTime: %lld\n",cur->tid,cur->minStartTime);
-    thread_yield ();
-  }
+
+  intr_disable();
+  list_push_back (&blocked_list, &cur->elem);
+  thread_block();
+  intr_enable();
+
+  // while (timer_elapsed (start) < ticks){ 
+  //   printf("DAKSH I AM YIELDING My THREAD\n");
+  //   printf("Thread:%d; I have minStartTime: %lld\n",cur->tid,cur->minStartTime);
+  //   thread_yield ();
+  // }
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -177,6 +187,14 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
+
+  struct thread * next = list_entry(list_begin(&blocked_list),struct thread, elem);
+
+  if(next-> minStartTime < timer_ticks ()){
+      next = list_entry (list_pop_front (&blocked_list), struct thread, elem);    
+      thread_unblock(next);
+  }
+
   thread_tick ();
 }
 
