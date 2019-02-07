@@ -97,8 +97,8 @@ MINSTARTvalue_less (const struct list_elem *a_, const struct list_elem *b_,
 {
   // const struct value *a = list_entry (a_, struct value, elem);
   // const struct value *b = list_entry (b_, struct value, elem);  
-  struct thread * a_t = a_;
-  struct thread * b_t = b_;
+  struct thread * a_t = list_entry(a_, struct thread, elem);
+  struct thread * b_t = list_entry(b_, struct thread, elem);
   return a_t->minStartTime < b_t->minStartTime;
 }
 
