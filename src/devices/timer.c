@@ -209,16 +209,13 @@ timer_interrupt (struct intr_frame *args UNUSED)
     printf("THERE ARE ELEMENTS IN THE BLOCKED LIST WOHOOOO\n");
     struct thread * next = list_entry(list_begin(&blocked_list),struct thread, elem);
     
-    // struct thread * start = next;
-    // do{
-    // } while(next->tid!=start->tid)
-
     printf("tid:%d; minStartTime:%lld; timer_ticks:%lld\n", next->tid, next->minStartTime, timer_ticks());
-    while(next-> minStartTime < timer_ticks ()){
+    while(!list_empty(&blocked_list) && next-> minStartTime < timer_ticks ()){
         printf("Popping the top thread blocked_list\n");
         next = list_entry (list_pop_front (&blocked_list), struct thread, elem);    
         thread_unblock(next);
-        next = list_entry(list_begin(&blocked_list),struct thread, elem);
+        if(!list_empty(&blocked_list)) 
+          next = list_entry(list_begin(&blocked_list),struct thread, elem);
     }  
   }
 
