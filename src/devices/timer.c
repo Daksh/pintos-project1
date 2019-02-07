@@ -93,8 +93,13 @@ timer_sleep (int64_t ticks)
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
+  struct thread *cur = thread_current();
+  cur->minStartTime = start+ticks;
+  while (timer_elapsed (start) < ticks){ 
+    printf("DAKSH I AM YIELDING My THREAD\n");
+    printf("Thread:%d; I have minStartTime: %lld\n",cur->tid,cur->minStartTime);
     thread_yield ();
+  }
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
