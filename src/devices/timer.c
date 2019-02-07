@@ -4,6 +4,7 @@
 #include <round.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <list.h>
 #include "devices/pit.h"
 #include "threads/interrupt.h"
 #include "threads/synch.h"
@@ -85,6 +86,17 @@ timer_elapsed (int64_t then)
   return timer_ticks () - then;
 }
 
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+MINSTARTvalue_less (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct thread * a_t = list_entry(a_, struct thread, elem);
+  struct thread * b_t = list_entry(b_, struct thread, elem);
+  return a_t->minStartTime < b_t->minStartTime;
+}
+
 /* Sleeps for approximately TICKS timer ticks.  Interrupts must
    be turned on. */
 void
@@ -93,8 +105,19 @@ timer_sleep (int64_t ticks)
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
-    thread_yield ();
+
+  //Have added a new variable in thread structure
+  //setting its (minStartTime) value for this thread to start+ticks
+  struct thread *cur = thread_current();
+  cur->minStartTime = start+ticks;
+
+  intr_disable();
+
+  //as start+ticks will not be sorted by default
+  list_insert_ordered (&blocked_list, &cur->elem, MINSTARTvalue_less, NULL);
+
+  thread_block();
+  intr_enable();
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -172,6 +195,18 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
+
+  if(!list_empty(&blocked_list)){
+    struct thread * next = list_entry(list_begin(&blocked_list),struct thread, elem);
+    
+    while(!list_empty(&blocked_list) && next-> minStartTime <= timer_ticks ()){
+        next = list_entry (list_pop_front (&blocked_list), struct thread, elem);    
+        thread_unblock(next);
+        if(!list_empty(&blocked_list)) 
+          next = list_entry(list_begin(&blocked_list),struct thread, elem);
+    }  
+  }
+
   thread_tick ();
 }
 
