@@ -495,9 +495,12 @@ next_thread_to_run (void)
     return idle_thread;
   else{
     struct thread * next = list_entry (list_pop_front (&ready_list), struct thread, elem);
+    struct thread *start = next;
     while(next-> minStartTime < timer_ticks ()){//possibility of infinte loop?
       list_push_back (&ready_list, &next->elem);
       next = list_entry (list_pop_front (&ready_list), struct thread, elem);
+      if(next == start)
+        return idle_thread;
     }
     return next;
   }
