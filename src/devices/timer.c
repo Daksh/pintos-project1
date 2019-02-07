@@ -92,17 +92,23 @@ void
 timer_sleep (int64_t ticks) 
 {
   int64_t start = timer_ticks ();
+
+  ASSERT (intr_get_level () == INTR_ON);
+
   struct thread *cur = thread_current ();
   cur->minStartTime = start+ticks;
+
+
+  
   intr_disable();
   list_push_back (&blocked_list, &cur->elem);
   thread_block();
   intr_enable();
 
-  ASSERT (intr_get_level () == INTR_ON);
+  // ASSERT (intr_get_level () == INTR_ON);
 //  while (timer_elapsed (start) < ticks)
 //    thread_yield ();
-  thread_yield();
+//thread_yield();
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -182,23 +188,12 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
   
   struct thread * next = list_entry(list_begin(&blocked_list),struct thread, elem);
-  struct thread *start = next;
   
   if(next-> minStartTime < timer_ticks ()){
       next = list_entry (list_pop_front (&blocked_list), struct thread, elem);    
       thread_unblock(next);
   }
-  //possibility of infinte loop?
-  // list_push_back (&ready_list, &next->elem);
-  // next = list_entry (list_pop_front (&ready_list), struct thread, elem);
-  // if(next == start)
-  // return idle_thread;  
 
-  // if()
-
-  // else{
-    
-  //   }
 
   thread_tick ();
 }

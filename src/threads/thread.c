@@ -246,6 +246,7 @@ thread_unblock (struct thread *t)
   ASSERT (t->status == THREAD_BLOCKED);
   list_push_back (&ready_list, &t->elem);
   t->status = THREAD_READY;
+  
   intr_set_level (old_level);
 }
 
@@ -498,19 +499,10 @@ alloc_frame (struct thread *t, size_t size)
 static struct thread *
 next_thread_to_run (void) 
 {
-  if (list_empty (&ready_list))
+ if (list_empty (&ready_list))
     return idle_thread;
-  else{
-    struct thread * next = list_entry (list_pop_front (&ready_list), struct thread, elem);
-    struct thread *start = next;
-    while(next-> minStartTime > timer_ticks ()){//possibility of infinte loop?
-      list_push_back (&ready_list, &next->elem);
-      next = list_entry (list_pop_front (&ready_list), struct thread, elem);
-      if(next == start)
-        return idle_thread;
-    }
-    return next;
-  }
+  else
+    return list_entry (list_pop_front (&ready_list), struct thread, elem);
 }
 
 /* Completes a thread switch by activating the new thread's page
