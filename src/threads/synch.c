@@ -227,7 +227,24 @@ lock_acquire (struct lock *lock)
   ASSERT (!intr_context ());
   ASSERT (!lock_held_by_current_thread (lock));
 
+  //Fix Priority Inversion Problem : DONATE to Donatee
+  int priorDoneeID = -1;
+  if((lock->holder!=NULL) && (lock->holder->priority < thread_get_priority() ) ){
+    // printf("lock->holder->priority:%d\tthread_current()->priority:%d\n",lock->holder->priority,thread_get_priority());
+    // printf("lock->holder ID:%d\n", lock->holder->tid);
+    get_priority_donation(lock->holder, thread_get_priority());
+    priorDoneeID = lock->holder->tid;
+  }
+
   sema_down (&lock->semaphore);
+
+  //Fix Priority Inversion Problem : Reset Donation
+  if (lock->holder!=NULL){
+    ASSERT (lock->holder->tid == priorDoneeID);
+  	// printf("DAX: lock->holder ID:%d\n", lock->holder->tid);
+  	forget_priority_donation(lock->holder);
+  }
+
   lock->holder = thread_current ();
 }
 
