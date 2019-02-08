@@ -209,6 +209,8 @@ timer_interrupt (struct intr_frame *args UNUSED)
     }  
   }
 
+  thread_tick();//can we just play with FIRE?
+
   if(!list_empty(&ready_list)){
     struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
 
@@ -218,7 +220,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
       thread_yield();
   }
 
-  thread_tick ();
+  //thread_tick ();
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
