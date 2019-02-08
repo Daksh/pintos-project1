@@ -22,10 +22,6 @@
    of thread.h for details. */
 #define THREAD_MAGIC 0xcd6abf4b
 
-/* List of processes in THREAD_READY state, that is, processes
-   that are ready to run but not actually running. */
-static struct list ready_list;
-
 /* List of all processes.  Processes are added to this list
    when they are first scheduled and removed when they exit. */
 static struct list all_list;
@@ -89,6 +85,8 @@ static tid_t allocate_tid (void);
 void
 thread_init (void) 
 {
+  /*Probably, it is the MAIN INIT Thread, which is kernel ki thread
+  Starts the threading process*/
   ASSERT (intr_get_level () == INTR_OFF);
 
   lock_init (&tid_lock);
@@ -99,7 +97,10 @@ thread_init (void)
   /* Set up a thread structure for the running thread. */
   initial_thread = running_thread ();
   init_thread (initial_thread, "main", PRI_DEFAULT);
+
+  //creates THE thread in BLOCKED status and updates it to RUNNING
   initial_thread->status = THREAD_RUNNING;
+
   initial_thread->tid = allocate_tid ();
 }
 
@@ -202,7 +203,9 @@ thread_create (const char *name, int priority,
   sf->ebp = 0;
 
   /* Add to run queue. */
-  thread_unblock (t);
+  thread_unblock (t); //This is what puts the thread in ready_list. CHECK THIS OUT
+  //TODO: Do we ask the current thread to yield (maybe), HERE?
+  //or do we add it in thread_unblock
 
   return tid;
 }
@@ -472,7 +475,11 @@ init_thread (struct thread *t, const char *name, int priority)
   ASSERT (name != NULL);
 
   memset (t, 0, sizeof *t);
+
+  //Initializes a new thread with a default BLOCKED State
+  //TODO: IF THE STATE IS BLOCKED, DO WE NEED TO ADD IT IN THE BLOCKED LIST???
   t->status = THREAD_BLOCKED;
+
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
@@ -482,6 +489,7 @@ init_thread (struct thread *t, const char *name, int priority)
   old_level = intr_disable ();
   list_push_back (&all_list, &t->allelem);
   intr_set_level (old_level);
+  //TODO: current thread handling, when the new thread is of highest priority
 }
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and

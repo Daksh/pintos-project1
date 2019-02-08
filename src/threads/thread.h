@@ -108,9 +108,15 @@ struct thread
    Controlled by kernel command-line option "-o mlfqs". */
 extern bool thread_mlfqs;
 
+//TODO: NOT SURE; DO WE???
+//      >>>    MOVE both these lists in thread.c and add getter/setter functions
 /* List of processes in THREAD_BLOCKED state, that is, processes
    that are ready to run but not actually running. */
 struct list blocked_list;
+
+/* List of processes in THREAD_READY state, that is, processes
+   that are ready to run but not actually running. */
+struct list ready_list;
 
 void thread_init (void);
 void thread_start (void);
