@@ -22,10 +22,6 @@
    of thread.h for details. */
 #define THREAD_MAGIC 0xcd6abf4b
 
-/* List of processes in THREAD_READY state, that is, processes
-   that are ready to run but not actually running. */
-static struct list ready_list;
-
 /* List of all processes.  Processes are added to this list
    when they are first scheduled and removed when they exit. */
 static struct list all_list;
@@ -89,6 +85,8 @@ static tid_t allocate_tid (void);
 void
 thread_init (void) 
 {
+  /*Probably, it is the MAIN INIT Thread, which is kernel ki thread
+  Starts the threading process*/
   ASSERT (intr_get_level () == INTR_OFF);
 
   lock_init (&tid_lock);
@@ -99,7 +97,10 @@ thread_init (void)
   /* Set up a thread structure for the running thread. */
   initial_thread = running_thread ();
   init_thread (initial_thread, "main", PRI_DEFAULT);
+
+  //creates THE thread in BLOCKED status and updates it to RUNNING
   initial_thread->status = THREAD_RUNNING;
+
   initial_thread->tid = allocate_tid ();
 }
 
@@ -202,7 +203,18 @@ thread_create (const char *name, int priority,
   sf->ebp = 0;
 
   /* Add to run queue. */
-  thread_unblock (t);
+  thread_unblock (t); //This is what puts the thread in ready_list. CHECK THIS OUT
+  //TODO: Do we ask the current thread to yield (maybe), HERE?
+  //or do we add it in thread_unblock
+
+  //TODO: Create this into a function cause this would be called at multiple times
+  struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
+  //thread_get_priority() gets the priority of the currently running thread
+  //Lower numbers correspond to lower priorities
+  if(thread_get_priority() < top_ready->priority){//strictly less than?
+    // printf("DAKSH: Yielding the thread with %d priority to the thread with %d prior\n", thread_get_priority(),top_ready->priority);
+    thread_yield();
+  }
 
   return tid;
 }
@@ -223,6 +235,17 @@ thread_block (void)
   schedule ();
 }
 
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+ready_list_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct thread * a_t = list_entry(a_, struct thread, elem);
+  struct thread * b_t = list_entry(b_, struct thread, elem);
+  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+}
+
 /* Transitions a blocked thread T to the ready-to-run state.
    This is an error if T is not blocked.  (Use thread_yield() to
    make the running thread ready.)
@@ -234,13 +257,19 @@ thread_block (void)
 void
 thread_unblock (struct thread *t) 
 {
+  // printf("DAKSH: INTR CONTEXT IN THREAD_UNBLOCKED%d\n", intr_context ());
   enum intr_level old_level;
 
   ASSERT (is_thread (t));
 
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
-  list_push_back (&ready_list, &t->elem);
+
+
+  //We need to add the unblocked thread in ready_list, regardless of whether or not 
+  // it will be scheduled right now
+  list_insert_ordered (&ready_list, &t->elem, ready_list_priority_comparator, NULL);
+
   t->status = THREAD_READY;
   intr_set_level (old_level);
 }
@@ -311,7 +340,7 @@ thread_yield (void)
 
   old_level = intr_disable ();
   if (cur != idle_thread) 
-    list_push_back (&ready_list, &cur->elem);
+    list_insert_ordered (&ready_list, &cur->elem, ready_list_priority_comparator, NULL);
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);
@@ -339,6 +368,12 @@ void
 thread_set_priority (int new_priority) 
 {
   thread_current ()->priority = new_priority;
+
+  if (!list_empty (&ready_list)){
+    struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
+    if(thread_get_priority() < top_ready->priority)
+      thread_yield();  
+  }
 }
 
 /* Returns the current thread's priority. */
@@ -461,7 +496,11 @@ init_thread (struct thread *t, const char *name, int priority)
   ASSERT (name != NULL);
 
   memset (t, 0, sizeof *t);
+
+  //Initializes a new thread with a default BLOCKED State
+  //TODO: IF THE STATE IS BLOCKED, DO WE NEED TO ADD IT IN THE BLOCKED LIST???
   t->status = THREAD_BLOCKED;
+
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
@@ -471,6 +510,7 @@ init_thread (struct thread *t, const char *name, int priority)
   old_level = intr_disable ();
   list_push_back (&all_list, &t->allelem);
   intr_set_level (old_level);
+  //TODO: current thread handling, when the new thread is of highest priority
 }
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and
