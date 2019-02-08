@@ -64,6 +64,22 @@ sema_waiters_comparator (const struct list_elem *a_, const struct list_elem *b_,
   return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
 }
 
+//TODO: Add declaration
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+cond_waiters_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct semaphore_elem * a_s = list_entry(a_, struct semaphore_elem, elem);
+  struct semaphore_elem * b_s = list_entry(b_, struct semaphore_elem, elem);
+  struct semaphore *sema_a = a_s->semaphore;
+  struct semaphore *sema_b = b_s->semaphore;
+  struct thread * a_t = list_entry(a_s->waiters, struct thread, elem);
+  struct thread * b_t = list_entry(b_->waiters, struct thread, elem);  
+  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+}
+
 
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
    to become positive and then atomically decrements it.
