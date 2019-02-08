@@ -22,6 +22,10 @@
    of thread.h for details. */
 #define THREAD_MAGIC 0xcd6abf4b
 
+/* List of processes in THREAD_READY state, that is, processes
+   that are ready to run but not actually running. */
+static struct list ready_list;
+
 /* List of all processes.  Processes are added to this list
    when they are first scheduled and removed when they exit. */
 static struct list all_list;
@@ -254,7 +258,19 @@ thread_unblock (struct thread *t)
 
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
+
+
+  //We need to add the unblocked thread in ready_list, regardless of whether or not 
+  // it will be scheduled right now
   list_insert_ordered (&ready_list, &t->elem, ready_list_priority_comparator, NULL);
+
+  struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
+  //thread_get_priority() gets the priority of the currently running thread
+  //Lower numbers correspond to lower priorities
+  if(thread_get_priority() < top_ready->priority)//strictly less than?
+    thread_yield();
+  
+
   t->status = THREAD_READY;
   intr_set_level (old_level);
 }

@@ -209,18 +209,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
     }  
   }
 
-  thread_tick();//can we just play with FIRE?
-
-  if(!list_empty(&ready_list)){
-    struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
-
-    //thread_get_priority() gets the priority of the currently running thread
-    //Lower numbers correspond to lower priorities
-    if(thread_get_priority() < top_ready->priority)//strictly less than?
-      thread_yield();
-  }
-
-  //thread_tick ();
+  thread_tick ();
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
