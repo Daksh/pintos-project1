@@ -282,6 +282,7 @@ struct semaphore_elem
   {
     struct list_elem elem;              /* List element. */
     struct semaphore semaphore;         /* This semaphore. */
+    int priority; //variable created by Daksh. TODO: Check Correctness
   };
 
 /* Initializes condition variable COND.  A condition variable
@@ -294,6 +295,18 @@ cond_init (struct condition *cond)
 
   list_init (&cond->waiters);
 }
+
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
+  struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
+  return a_t->priority > b_t->priority;//TODO: >= ? I think not. elem,e
+}
+
 
 /* Atomically releases LOCK and waits for COND to be signaled by
    some other piece of code.  After COND is signaled, LOCK is
@@ -326,10 +339,28 @@ cond_wait (struct condition *cond, struct lock *lock)
   ASSERT (lock_held_by_current_thread (lock));
   
   sema_init (&waiter.semaphore, 0);
-  list_push_back (&cond->waiters, &waiter.elem);
+  //TODO: Check if this would indeed be the priority of this semaphore_elem block
+  waiter.priority = thread_current() -> priority;
+
+
+  //pushing a new semaphore_elem called waiter with {semaphore=0} 
+  //into the arg conditionalVariable's waiters list; 
+  // list_push_back (&cond->waiters, &waiter.elem);
+  list_insert_ordered (&cond->waiters, &waiter.elem,semaphore_elem_less_comparator, NULL);
+
+  //some other lock that is being passed to me in the args. I am releasing it for now
   lock_release (lock);
+
+  //Trying to acquire-lock/play with the newly created semaphore_elem
+  // but given that it has a semaphore value of 0. I cannot do that immediately
+  // so I just pause my execution here (inside the sema_down call), in the hope
+  // that some day, someone will make the semaphore up and I can get the lock on it
   sema_down (&waiter.semaphore);
+  
+  //acquiring the same lock again, that was given in the arg and I had temporarily released
   lock_acquire (lock);
+
+  //now I would have both the locks: lock and the waiter->semaphore that I created
 }
 
 /* If any threads are waiting on COND (protected by LOCK), then
