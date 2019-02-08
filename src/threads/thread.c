@@ -22,10 +22,6 @@
    of thread.h for details. */
 #define THREAD_MAGIC 0xcd6abf4b
 
-/* List of processes in THREAD_READY state, that is, processes
-   that are ready to run but not actually running. */
-static struct list ready_list;
-
 /* List of all processes.  Processes are added to this list
    when they are first scheduled and removed when they exit. */
 static struct list all_list;
@@ -261,7 +257,7 @@ ready_list_priority_comparator (const struct list_elem *a_, const struct list_el
 void
 thread_unblock (struct thread *t) 
 {
-  printf("DAKSH: INTR CONTEXT IN THREAD_UNBLOCKED%d\n", intr_context ());
+  // printf("DAKSH: INTR CONTEXT IN THREAD_UNBLOCKED%d\n", intr_context ());
   enum intr_level old_level;
 
   ASSERT (is_thread (t));
