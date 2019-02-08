@@ -128,9 +128,15 @@ sema_up (struct semaphore *sema)
   ASSERT (sema != NULL);
 
   old_level = intr_disable ();
+
+  struct thread * waiting_thread_to_be_awakened = NULL;
   if (!list_empty (&sema->waiters)){
-    struct thread * waiting_thread_to_be_awakened = list_entry (list_pop_front (&sema->waiters),struct thread, elem);
+    waiting_thread_to_be_awakened = list_entry (list_pop_front (&sema->waiters),struct thread, elem);
     thread_unblock (waiting_thread_to_be_awakened);
+  }
+  sema->value++;
+
+  if (waiting_thread_to_be_awakened!=NULL){
     if(thread_current()-> priority < waiting_thread_to_be_awakened -> priority){
       if(intr_context())
         intr_yield_on_return();
@@ -138,7 +144,6 @@ sema_up (struct semaphore *sema)
         thread_yield();
     }
   } 
-  sema->value++;
   intr_set_level (old_level);
 }
 
