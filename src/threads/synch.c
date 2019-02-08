@@ -51,6 +51,17 @@ sema_init (struct semaphore *sema, unsigned value)
   list_init (&sema->waiters);
 }
 
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+thread_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct thread * a_t = list_entry(a_, struct thread, elem);
+  struct thread * b_t = list_entry(b_, struct thread, elem);
+  return a_t->priority > b_t->priority;//TODO: >= ? I think not. elem,e
+}
+
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
    to become positive and then atomically decrements it.
 
@@ -69,7 +80,14 @@ sema_down (struct semaphore *sema)
   old_level = intr_disable ();
   while (sema->value == 0) 
     {
-      list_push_back (&sema->waiters, &thread_current ()->elem);
+      // DEFN: list_push_back (struct list *list, struct list_elem *elem)
+      // list_push_back (&sema->waiters, &thread_current ()->elem);
+
+      //when we are waiting to acquire a lock, we go to the waiters list(&sema->waiters); 
+      //which will be a priority queue
+      // DEFN: list_insert_ordered (struct list *list, struct list_elem *elem,list_less_func *less, void *aux)
+      list_insert_ordered (&sema->waiters, &thread_current ()->elem, thread_less_comparator, NULL);
+
       thread_block ();
     }
   sema->value--;
@@ -114,10 +132,22 @@ sema_up (struct semaphore *sema)
   ASSERT (sema != NULL);
 
   old_level = intr_disable ();
-  if (!list_empty (&sema->waiters)) 
-    thread_unblock (list_entry (list_pop_front (&sema->waiters),
-                                struct thread, elem));
+
+  struct thread *top_waiter = NULL;
+  if (!list_empty (&sema->waiters)) {
+    top_waiter = list_entry (list_pop_front (&sema->waiters),struct thread, elem);
+    thread_unblock (top_waiter);
+  }
+
   sema->value++;
+
+  if(top_waiter!=NULL && top_waiter->priority >= thread_current() -> priority){//TODO check >=
+    if(intr_context())
+      intr_yield_on_return();
+    else
+      thread_yield();
+  }
+
   intr_set_level (old_level);
 }
 
