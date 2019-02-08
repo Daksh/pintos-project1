@@ -51,6 +51,20 @@ sema_init (struct semaphore *sema, unsigned value)
   list_init (&sema->waiters);
 }
 
+//TODO: Add declaration
+//TODO: Maybe re-use the function
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+sema_waiters_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct thread * a_t = list_entry(a_, struct thread, elem);
+  struct thread * b_t = list_entry(b_, struct thread, elem);
+  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+}
+
+
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
    to become positive and then atomically decrements it.
 
@@ -69,7 +83,7 @@ sema_down (struct semaphore *sema)
   old_level = intr_disable ();
   while (sema->value == 0) 
     {
-      list_push_back (&sema->waiters, &thread_current ()->elem);
+      list_insert_ordered (&sema->waiters, &thread_current ()->elem, sema_waiters_comparator, NULL);
       thread_block ();
     }
   sema->value--;
@@ -114,9 +128,16 @@ sema_up (struct semaphore *sema)
   ASSERT (sema != NULL);
 
   old_level = intr_disable ();
-  if (!list_empty (&sema->waiters)) 
-    thread_unblock (list_entry (list_pop_front (&sema->waiters),
-                                struct thread, elem));
+  if (!list_empty (&sema->waiters)){
+    struct thread * waiting_thread_to_be_awakened = list_entry (list_pop_front (&sema->waiters),struct thread, elem);
+    thread_unblock (waiting_thread_to_be_awakened);
+    if(thread_current()-> priority < waiting_thread_to_be_awakened -> priority){
+      if(intr_context())
+        intr_yield_on_return();
+      else
+        thread_yield();
+    }
+  } 
   sema->value++;
   intr_set_level (old_level);
 }
@@ -296,7 +317,7 @@ cond_wait (struct condition *cond, struct lock *lock)
   ASSERT (lock_held_by_current_thread (lock));
   
   sema_init (&waiter.semaphore, 0);
-  list_push_back (&cond->waiters, &waiter.elem);
+  list_push_back (&cond->waiters, &waiter.elem);//TODO: Do we need to change here???
   lock_release (lock);
   sema_down (&waiter.semaphore);
   lock_acquire (lock);
