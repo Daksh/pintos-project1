@@ -108,6 +108,7 @@ void
 timer_sleep (int64_t ticks) 
 {
   int64_t start = timer_ticks ();
+  enum intr_level old_level;
 
   ASSERT (intr_get_level () == INTR_ON);
 
@@ -117,11 +118,11 @@ timer_sleep (int64_t ticks)
   cur->minStartTime = start+ticks;
   //printf("tid:%d; setting minStartTime to %lld\n", cur->tid, cur->minStartTime);
 
-  intr_disable();
+  old_level = intr_disable();
   // list_push_back (&blocked_list, &cur->elem);
   list_insert_ordered (&blocked_list, &cur->elem, MINSTARTvalue_less, NULL);
   thread_block();
-  intr_enable();
+  intr_set_level(old_level);
 
   // while (timer_elapsed (start) < ticks){ 
   //   printf("DAKSH I AM YIELDING My THREAD\n");
