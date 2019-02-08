@@ -207,13 +207,12 @@ timer_interrupt (struct intr_frame *args UNUSED)
         if(!list_empty(&blocked_list)) 
           next = list_entry(list_begin(&blocked_list),struct thread, elem);
     }  
-  }
 
-  if (!list_empty (&ready_list)){
-    struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
-    if(thread_get_priority() < top_ready->priority){
-      intr_yield_on_return();
-    }  
+    if (!list_empty (&ready_list)){
+      struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
+      if(thread_get_priority() < top_ready->priority)
+        intr_yield_on_return();  
+    }
   }
 
   thread_tick ();
