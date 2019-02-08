@@ -363,6 +363,36 @@ thread_foreach (thread_action_func *func, void *aux)
     }
 }
 
+/* Thread t gets a priority donation 
+NOT an Interrupt context*/
+void
+get_priority_donation (struct thread * t, int donated_priority)
+{
+  ASSERT (!intr_context ());
+  ASSERT (t!=NULL);
+  
+  if(t->d_priority < donated_priority)
+    t->d_priority = donated_priority;
+
+  if (thread_get_priority() <= t->d_priority)
+    thread_yield();
+}
+
+//to think about 5->7->9. now forgetting 9 you might want to get back 7 instead of original 5
+void 
+forget_priority_donation (struct thread * t)
+{
+  t->d_priority = 0;
+
+  if(thread_current() == t){
+    if (!list_empty (&ready_list)){
+      struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
+      if(thread_get_priority() < top_ready->priority)
+        thread_yield();  
+    }    
+  }
+}
+
 /* Sets the current thread's priority to NEW_PRIORITY. */
 void
 thread_set_priority (int new_priority) 
@@ -380,7 +410,9 @@ thread_set_priority (int new_priority)
 int
 thread_get_priority (void) 
 {
-  return thread_current ()->priority;
+  if(thread_current()->priority >= thread_current()->d_priority)
+    return thread_current ()->priority;
+  return thread_current() -> d_priority;
 }
 
 /* Sets the current thread's nice value to NICE. */
@@ -504,6 +536,7 @@ init_thread (struct thread *t, const char *name, int priority)
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
+  t->d_priority = 0;
   t->minStartTime=0;
   t->magic = THREAD_MAGIC;
 
