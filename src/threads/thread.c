@@ -264,15 +264,15 @@ thread_unblock (struct thread *t)
   // it will be scheduled right now
   list_insert_ordered (&ready_list, &t->elem, ready_list_priority_comparator, NULL);
 
+  t->status = THREAD_READY;
+  intr_set_level (old_level);
+
+
   struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
   //thread_get_priority() gets the priority of the currently running thread
   //Lower numbers correspond to lower priorities
   if(thread_get_priority() < top_ready->priority)//strictly less than?
-    thread_yield();
-  
-
-  t->status = THREAD_READY;
-  intr_set_level (old_level);
+    thread_yield();  
 }
 
 /* Returns the name of the running thread. */
