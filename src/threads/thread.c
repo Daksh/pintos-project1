@@ -211,6 +211,14 @@ thread_create (const char *name, int priority,
   //TODO: Do we ask the current thread to yield (maybe), HERE?
   //or do we add it in thread_unblock
 
+  struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
+  //thread_get_priority() gets the priority of the currently running thread
+  //Lower numbers correspond to lower priorities
+  if(thread_get_priority() < top_ready->priority){//strictly less than?
+    printf("DAKSH: Yielding the thread with %d priority to the thread with %d prior\n", thread_get_priority(),top_ready->priority);
+    thread_yield();
+  }
+
   return tid;
 }
 
@@ -266,15 +274,6 @@ thread_unblock (struct thread *t)
 
   t->status = THREAD_READY;
   intr_set_level (old_level);
-
-
-  struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
-  //thread_get_priority() gets the priority of the currently running thread
-  //Lower numbers correspond to lower priorities
-  if(thread_get_priority() < top_ready->priority){//strictly less than?
-    printf("DAKSH: Yielding the thread with %d priority to the thread with %d prior\n", thread_get_priority(),top_ready->priority);
-    thread_yield();
-  }
 }
 
 /* Returns the name of the running thread. */
