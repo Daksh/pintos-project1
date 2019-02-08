@@ -261,6 +261,7 @@ ready_list_priority_comparator (const struct list_elem *a_, const struct list_el
 void
 thread_unblock (struct thread *t) 
 {
+  printf("DAKSH: INTR CONTEXT IN THREAD_UNBLOCKED%d\n", intr_context ());
   enum intr_level old_level;
 
   ASSERT (is_thread (t));
