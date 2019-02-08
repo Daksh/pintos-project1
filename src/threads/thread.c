@@ -271,8 +271,10 @@ thread_unblock (struct thread *t)
   struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
   //thread_get_priority() gets the priority of the currently running thread
   //Lower numbers correspond to lower priorities
-  if(thread_get_priority() < top_ready->priority)//strictly less than?
-    thread_yield();  
+  if(thread_get_priority() < top_ready->priority){//strictly less than?
+    printf("DAKSH: Yielding the thread with %d priority to the thread with %d prior\n", thread_get_priority(),top_ready->priority);
+    thread_yield();
+  }
 }
 
 /* Returns the name of the running thread. */
