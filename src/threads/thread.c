@@ -223,6 +223,17 @@ thread_block (void)
   schedule ();
 }
 
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+ready_list_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct thread * a_t = list_entry(a_, struct thread, elem);
+  struct thread * b_t = list_entry(b_, struct thread, elem);
+  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+}
+
 /* Transitions a blocked thread T to the ready-to-run state.
    This is an error if T is not blocked.  (Use thread_yield() to
    make the running thread ready.)
@@ -240,7 +251,7 @@ thread_unblock (struct thread *t)
 
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
-  list_push_back (&ready_list, &t->elem);
+  list_insert_ordered (&ready_list, &t->elem, ready_list_priority_comparator, NULL);
   t->status = THREAD_READY;
   intr_set_level (old_level);
 }
@@ -311,7 +322,7 @@ thread_yield (void)
 
   old_level = intr_disable ();
   if (cur != idle_thread) 
-    list_push_back (&ready_list, &cur->elem);
+    list_insert_ordered (&ready_list, &cur->elem, ready_list_priority_comparator, NULL);
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);
