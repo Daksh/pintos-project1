@@ -370,7 +370,7 @@ MY_get_priority (struct thread * checkThread)
     return checkThread->priority;
   
   struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, elem);
-  printf("Getting Priority of ThreadID:%d, priority:%d, topDonorPriority:%d\n", checkThread->tid, checkThread->priority,topDonor->priority);
+  printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
   if(checkThread->priority >= topDonor->priority)
     return checkThread->priority;
   return topDonor -> priority;
