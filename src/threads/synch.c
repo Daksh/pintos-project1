@@ -372,7 +372,7 @@ semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_el
   struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
   struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
 
-  return thread_less_comparator(list_front(a_t->semaphore.waiters), list_front(b_t->semaphore.waiters));
+  return thread_less_comparator(list_front(&a_t->semaphore.waiters), list_front(&b_t->semaphore.waiters),NULL);
 }
 
 /* If any threads are waiting on COND (protected by LOCK), then
@@ -392,9 +392,8 @@ cond_signal (struct condition *cond, struct lock *lock UNUSED)
 
   if (!list_empty (&cond->waiters)){
     struct list_elem * le = list_min (&cond->waiters, semaphore_elem_less_comparator, NULL);
-    struct semaphore_elem * x = list_entry(le,struct semaphore_elem, elem)
+    struct semaphore_elem * x = list_entry(le,struct semaphore_elem, elem);
     sema_up (&x->semaphore);
-    
   } 
 }
 
