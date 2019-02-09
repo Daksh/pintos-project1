@@ -371,6 +371,7 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   ASSERT (!intr_context ());
   ASSERT (donnee!=NULL);
   ASSERT (donor!=NULL);
+  printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donne->tid, donne->priority,donor->tid,donor->priority);
   
   list_insert_ordered (&donnee->donor_threads, &donor->donorelem, thread_priority_comparator, NULL);
 
@@ -383,7 +384,7 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
 }
 
 void 
-forget_priority_donation (struct thread * donee,struct thread * donor)
+forget_priority_donation (struct thread * donnee,struct thread * donor)
 {
   //donorelem can identify which list does it belong to
   //basically donorelem is the node and we remove it with its
@@ -392,7 +393,7 @@ forget_priority_donation (struct thread * donee,struct thread * donor)
   list_remove (&donor->donorelem);
   //TOOD: Sort readyList? PROBLEM maybe
 
-  if(thread_current() == donee){
+  if(thread_current() == donnee){
     if (!list_empty (&ready_list)){//TODO: Check, wake up blocked thread?
       struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
       if(thread_get_priority() <= top_ready->priority)
@@ -423,6 +424,7 @@ thread_get_priority (void)
     return curThread->priority;
   
   struct thread * topDonor = list_entry (list_front (&curThread->donor_threads), struct thread, elem);
+  printf("Getting Priority of ThreadID:%d, priority:%d, topDonorPriority:%d\n", curThread->tid, curThread->priority,topDonor->priority);
   if(curThread->priority >= topDonor->priority)
     return curThread->priority;
   return topDonor -> priority;
