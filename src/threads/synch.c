@@ -142,7 +142,7 @@ sema_up (struct semaphore *sema)
 
   sema->value++;
 
-  if(top_waiter!=NULL && top_waiter->priority >= thread_current() -> priority){//TODO check >=
+  if(top_waiter!=NULL && MY_get_priority(top_waiter) >= thread_get_priority()){//TODO check >=
     if(intr_context())
       intr_yield_on_return();
     else
@@ -234,7 +234,7 @@ lock_acquire (struct lock *lock)
   //holder is the donnee
   struct thread * hlder =lock->holder;
   struct thread * donor = thread_current();
-  if((hlder!=NULL) && (hlder->priority < thread_get_priority() ) ){
+  if((hlder!=NULL) && (MY_get_priority(hlder) < thread_get_priority() ) ){
     // printf("lock->holder->priority:%d\tthread_current()->priority:%d\n",lock->holder->priority,thread_get_priority());
     // printf("lock->holder ID:%d\n", lock->holder->tid);
     get_priority_donation(hlder, thread_current());
@@ -327,7 +327,9 @@ semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_el
   struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
   struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
   printf("DAX: SYNCH2\n");
-  return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
+
+  //Cannot do this because MY_get_priority needs a thread* not a semaphore_elem*
+  return a_t->priority > b_t->priority;//TODO: >= ? I think not. elem,e
 }
 
 
@@ -363,7 +365,7 @@ cond_wait (struct condition *cond, struct lock *lock)
   
   sema_init (&waiter.semaphore, 0);
   //TODO: Check if this would indeed be the priority of this semaphore_elem block
-  waiter.priority = thread_current() -> priority;
+  waiter.priority = thread_get_priority();
 
 
   //pushing a new semaphore_elem called waiter with {semaphore=0} 
