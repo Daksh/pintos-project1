@@ -363,6 +363,17 @@ thread_foreach (thread_action_func *func, void *aux)
     }
 }
 
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+dprior_elem_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct dprior * a_t = list_entry(a_, struct dprior, elem);
+  struct dprior * b_t = list_entry(b_, struct dprior, elem);
+  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+}
+
 /* Thread t gets a priority donation 
 NOT an Interrupt context*/
 void
@@ -370,26 +381,37 @@ get_priority_donation (struct thread * t, int donated_priority)
 {
   ASSERT (!intr_context ());
   ASSERT (t!=NULL);
-  
-  if(t->d_priority < donated_priority)
-    t->d_priority = donated_priority;
 
-  if (thread_get_priority() <= t->d_priority)
-    thread_yield();
+  struct dprior dp;
+  dp.priority=donated_priority; 
+  
+  list_insert_ordered (&t->d_priority_list, &dp.elem, dprior_elem_comparator, NULL);
+
+  if(!list_empty(&t->d_priority_list)){
+    struct dprior * top_prior = list_entry(list_begin(&t->d_priority_list),struct dprior, elem);
+    if(thread_get_priority() <= top_prior->priority)
+      thread_yield();  
+  }
 }
 
-//to think about 5->7->9. now forgetting 9 you might want to get back 7 instead of original 5
 void 
-forget_priority_donation (struct thread * t)
+forget_priority_donation (struct thread * t, int donated_priority)
 {
-  t->d_priority = 0;
+  struct dprior * start = list_entry(list_begin(&t->d_priority_list), struct dprior, elem);
+  while(start!=list_entry(list_end(&t->d_priority_list), struct dprior, elem)){
+    if(start->priority==donated_priority){
+      list_remove(&start->elem);
+      break;
+    }
+    start = list_entry(list_next(start), struct dprior, elem);
+  }
 
   if(thread_current() == t){
     if (!list_empty (&ready_list)){
       struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
       if(thread_get_priority() < top_ready->priority)
         thread_yield();  
-    }    
+    }
   }
 }
 
@@ -410,9 +432,12 @@ thread_set_priority (int new_priority)
 int
 thread_get_priority (void) 
 {
-  if(thread_current()->priority >= thread_current()->d_priority)
+  if(list_empty(&thread_current()->d_priority_list))
     return thread_current ()->priority;
-  return thread_current() -> d_priority;
+  struct dprior * top_prior = list_entry(list_begin(&thread_current()->d_priority_list),struct dprior, elem);
+  if(thread_current()->priority >= top_prior->priority)
+    return thread_current ()->priority;
+  return top_prior->priority;
 }
 
 /* Sets the current thread's nice value to NICE. */
@@ -536,7 +561,7 @@ init_thread (struct thread *t, const char *name, int priority)
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
-  t->d_priority = 0;
+  list_init (&t->d_priority_list);
   t->minStartTime=0;
   t->magic = THREAD_MAGIC;
 

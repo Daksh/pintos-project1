@@ -5,6 +5,12 @@
 #include <list.h>
 #include <stdint.h>
 
+struct dprior
+  {
+    struct list_elem elem;
+    int priority;
+  };
+
 /* States in a thread's life cycle. */
 enum thread_status
   {
@@ -88,7 +94,7 @@ struct thread
     char name[16];                      /* Name (for debugging purposes). */
     uint8_t *stack;                     /* Saved stack pointer. */
     int priority;                       /* Priority. */
-    int d_priority;                     /* Donated Priority*/
+    struct list d_priority_list;   /* Donated Priority List */
     struct list_elem allelem;           /* List element for all threads list. */
     int64_t minStartTime; //time as returned by timer_ticks
 
@@ -146,7 +152,7 @@ int thread_get_priority (void);
 void thread_set_priority (int);
 
 void get_priority_donation (struct thread *, int);
-void forget_priority_donation (struct thread *);
+void forget_priority_donation (struct thread *, int);
 
 int thread_get_nice (void);
 void thread_set_nice (int);
