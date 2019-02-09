@@ -211,8 +211,11 @@ thread_create (const char *name, int priority,
   struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
   //thread_get_priority() gets the priority of the currently running thread
   //Lower numbers correspond to lower priorities
+  printf("DS: Creating thread '%s' with priority %d\n", name,priority);
+  printf("DS: Current thread '%s' with priority %d\n", thread_current(), thread_get_priority());
   if(thread_get_priority() < top_ready->priority){//strictly less than?
     // printf("DAKSH: Yielding the thread with %d priority to the thread with %d prior\n", thread_get_priority(),top_ready->priority);
+    printf("DS: Yielding the current thread for new thread\n");
     thread_yield();
   }
 
@@ -398,7 +401,7 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   ASSERT (donnee!=NULL);
   ASSERT (donor!=NULL);
   // printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donnee->tid, donnee->priority,donor->tid,donor->priority);
-  printf("DAX: Thread %s donating priority(%d) to %s(having %d)\n", donor->name, donor->priority, donnee->name, donnee->priority);
+  // printf("DAX: Thread %s donating priority(%d) to %s(having %d)\n", donor->name, donor->priority, donnee->name, donnee->priority);
 
   // printf("BEFORE | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
   list_insert_ordered (&donnee->donor_threads, &donor->donorelem, d_thread_priority_comparator, NULL);
@@ -411,13 +414,13 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   if (thread_get_priority() <= donor->priority)//TODO:CHECK
     thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
 
-  printf("DAX: MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
+  // printf("DAX: MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
 }
 
 void 
 forget_priority_donation (struct thread * donnee,struct thread * donor)
 {
-  printf("DAX: Thread %s forgetting donated priority given by %s\n", donnee->name, donor->name);
+  // printf("DAX: Thread %s forgetting donated priority given by %s\n", donnee->name, donor->name);
   //donorelem can identify which list does it belong to
   //basically donorelem is the node and we remove it with its
   //prev and next pointers
