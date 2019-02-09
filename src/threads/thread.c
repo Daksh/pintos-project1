@@ -382,6 +382,7 @@ get_priority_donation (struct thread * t, int donated_priority)
 void 
 forget_priority_donation (struct thread * t)
 {
+  printf("Forgetting priority donation for thread:%d\tprior:%d\toriginal_prior:%d\n", t->tid,t->d_priority,t->priority);
   t->d_priority = 0;
 
   if(thread_current() == t){

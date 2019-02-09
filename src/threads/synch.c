@@ -243,6 +243,8 @@ lock_acquire (struct lock *lock)
     ASSERT (lock->holder->tid == priorDoneeID);
   	// printf("DAX: lock->holder ID:%d\n", lock->holder->tid);
   	forget_priority_donation(lock->holder);
+  }else{
+    printf("Lock Holder is NULL now :| and priorDoneeID is %d\t\n", priorDoneeID);
   }
 
   lock->holder = thread_current ();
