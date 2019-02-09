@@ -59,7 +59,7 @@ thread_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
 {
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  return a_t->priority > b_t->priority;//TODO: >= ? I think not. elem,e
+  return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
 }
 
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
@@ -325,7 +325,7 @@ semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_el
 {
   struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
   struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
-  return a_t->priority > b_t->priority;//TODO: >= ? I think not. elem,e
+  return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
 }
 
 

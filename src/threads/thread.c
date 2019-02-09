@@ -243,10 +243,10 @@ thread_block (void)
 static bool
 thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
             void *aux UNUSED) 
-{
+{ //the one with higher priority should appear first in the list
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+  return MY_get_priority(a_t) > MY_get_priority(b_t);
 }
 
 /* Returns true if value A is less than value B, false
@@ -254,12 +254,11 @@ thread_priority_comparator (const struct list_elem *a_, const struct list_elem *
 static bool
 d_thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
             void *aux UNUSED) 
-{
+{ //the one with higher priority should appear first in the list
   struct thread * a_t = list_entry(a_, struct thread, donorelem);
   struct thread * b_t = list_entry(b_, struct thread, donorelem);
   
-  //the one with higher priority should appear first in the list
-  return a_t->priority > b_t->priority;//do we need to change this to use MY_get
+  return MY_get_priority(a_t) > MY_get_priority(b_t);
 }
 
 /* Transitions a blocked thread T to the ready-to-run state.
