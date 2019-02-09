@@ -392,7 +392,7 @@ forget_priority_donation (struct thread * donee,struct thread * donor)
   list_remove (&donor->donorelem);
   //TOOD: Sort readyList? PROBLEM maybe
 
-  if(thread_current() == &donee){
+  if(thread_current() == donee){
     if (!list_empty (&ready_list)){//TODO: Check, wake up blocked thread?
       struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
       if(thread_get_priority() <= top_ready->priority)
