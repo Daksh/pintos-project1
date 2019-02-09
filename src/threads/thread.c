@@ -238,7 +238,7 @@ thread_block (void)
 /* Returns true if value A is less than value B, false
    otherwise. */
 static bool
-ready_list_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
+thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
             void *aux UNUSED) 
 {
   struct thread * a_t = list_entry(a_, struct thread, elem);
@@ -268,7 +268,7 @@ thread_unblock (struct thread *t)
 
   //We need to add the unblocked thread in ready_list, regardless of whether or not 
   // it will be scheduled right now
-  list_insert_ordered (&ready_list, &t->elem, ready_list_priority_comparator, NULL);
+  list_insert_ordered (&ready_list, &t->elem, thread_priority_comparator, NULL);
 
   t->status = THREAD_READY;
   intr_set_level (old_level);
@@ -340,7 +340,7 @@ thread_yield (void)
 
   old_level = intr_disable ();
   if (cur != idle_thread) 
-    list_insert_ordered (&ready_list, &cur->elem, ready_list_priority_comparator, NULL);
+    list_insert_ordered (&ready_list, &cur->elem, thread_priority_comparator, NULL);
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);
@@ -366,29 +366,39 @@ thread_foreach (thread_action_func *func, void *aux)
 /* Thread t gets a priority donation 
 NOT an Interrupt context*/
 void
-get_priority_donation (struct thread * t, int donated_priority)
+get_priority_donation (struct thread * donnee, struct thread * donor)
 {
   ASSERT (!intr_context ());
-  ASSERT (t!=NULL);
+  ASSERT (donnee!=NULL);
+  ASSERT (donor!=NULL);
   
-  if(t->d_priority < donated_priority)
-    t->d_priority = donated_priority;
+  list_insert_ordered (&donnee->donor_threads, &donor->donorelem, thread_priority_comparator, NULL);
 
-  if (thread_get_priority() <= t->d_priority)
-    thread_yield();
+  //if the current (running) thread priority is lesser
+  //than the donnee priority, then yield the running thread
+  //note, we are not checking if the donnee is blocked or anything
+  //TODO: Verify
+  if (thread_get_priority() <= donnee->thread_get_priority())
+    thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
 }
 
-//to think about 5->7->9. now forgetting 9 you might want to get back 7 instead of original 5
 void 
-forget_priority_donation (struct thread * t)
+forget_priority_donation (struct thread * donee,struct thread * donor)
 {
   // printf("Forgetting priority donation for thread:%d\tprior:%d\toriginal_prior:%d\n", t->tid,t->d_priority,t->priority);
   t->d_priority = 0;
 
+  //donorelem can identify which list does it belong to
+  //basically donorelem is the node and we remove it with its
+  //prev and next pointers
+  //TODO: minimal verify
+  list_remove (&donor()->donorelem);
+  //TOOD: Sort readyList? PROBLEM maybe
+
   if(thread_current() == t){
-    if (!list_empty (&ready_list)){
+    if (!list_empty (&ready_list)){//TODO: Check, wake up blocked thread?
       struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
-      if(thread_get_priority() < top_ready->priority)
+      if(thread_get_priority() <= top_ready->priority)
         thread_yield();  
     }    
   }
@@ -411,9 +421,14 @@ thread_set_priority (int new_priority)
 int
 thread_get_priority (void) 
 {
-  if(thread_current()->priority >= thread_current()->d_priority)
-    return thread_current ()->priority;
-  return thread_current() -> d_priority;
+  struct thread * curThread = thread_current();
+  if(list_empty (curThread->donor_threads))
+    return curThread->priority;
+  
+  struct thread * topDonor = list_entry (list_pop_front (&curThread->donor_threads), struct thread, elem);
+  if(curThread->priority >= topDonor->priority)
+    return curThread->priority;
+  return topDonor -> priority;
 }
 
 /* Sets the current thread's nice value to NICE. */
@@ -537,7 +552,7 @@ init_thread (struct thread *t, const char *name, int priority)
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
-  t->d_priority = 0;
+  list_init(&t->donor_threads);
   t->minStartTime=0;
   t->magic = THREAD_MAGIC;
 
