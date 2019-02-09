@@ -143,7 +143,7 @@ sema_up (struct semaphore *sema)
 
   struct thread *top_waiter = NULL;
   if (!list_empty (&sema->waiters)) {
-    struct list_elem * le = list_min (&sema->waiters, semaphore_elem_less_comparator, NULL);
+    struct list_elem * le = list_min (&sema->waiters, thread_less_comparator, NULL);
     top_waiter = list_entry(le,struct thread, elem);
     list_remove(le);
 
