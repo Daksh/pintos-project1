@@ -211,11 +211,11 @@ thread_create (const char *name, int priority,
   struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
   //thread_get_priority() gets the priority of the currently running thread
   //Lower numbers correspond to lower priorities
-  printf("DS: Creating thread '%s' with priority %d\n", name,priority);
-  printf("DS: Current thread '%s' with priority %d\n", thread_current()->name, thread_get_priority());
+  // printf("DS: Creating thread '%s' with priority %d\n", name,priority);
+  // printf("DS: Current thread '%s' with priority %d\n", thread_current()->name, thread_get_priority());
   if(thread_get_priority() < top_ready->priority){//strictly less than?
     // printf("DAKSH: Yielding the thread with %d priority to the thread with %d prior\n", thread_get_priority(),top_ready->priority);
-    printf("DS: Yielding the current thread for new thread\n");
+    // printf("DS: Yielding the current thread for new thread\n");
     thread_yield();
   }
 
