@@ -78,7 +78,7 @@ semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_el
 {
   struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
   struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
-  return thread_less_comparator(list_front(&a_t->semaphore.waiters), list_front(&b_t->semaphore.waiters),NULL);
+  return thread_less_comparator(list_min (&a_t->semaphore.waiters, thread_less_comparator, NULL), list_min (&b_t->semaphore.waiters, thread_less_comparator, NULL);
 }
 
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
