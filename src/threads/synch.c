@@ -51,6 +51,14 @@ sema_init (struct semaphore *sema, unsigned value)
   list_init (&sema->waiters);
 }
 
+
+/* One semaphore in a list. */
+struct semaphore_elem 
+  {
+    struct list_elem elem;              /* List element. */
+    struct semaphore semaphore;         /* This semaphore. */
+  };
+
 /* Returns true if value A is less than value B, false
    otherwise. */
 static bool
@@ -59,7 +67,20 @@ thread_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
 {
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  return a_t->priority > b_t->priority;//TODO: >= ? I think not. elem,e
+
+  return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
+}
+
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
+  struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
+
+  return thread_less_comparator(list_front(&a_t->semaphore.waiters), list_front(&b_t->semaphore.waiters),NULL);
 }
 
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
@@ -80,13 +101,8 @@ sema_down (struct semaphore *sema)
   old_level = intr_disable ();
   while (sema->value == 0) 
     {
-      // DEFN: list_push_back (struct list *list, struct list_elem *elem)
-      // list_push_back (&sema->waiters, &thread_current ()->elem);
-
       //when we are waiting to acquire a lock, we go to the waiters list(&sema->waiters); 
-      //which will be a priority queue
-      // DEFN: list_insert_ordered (struct list *list, struct list_elem *elem,list_less_func *less, void *aux)
-      list_insert_ordered (&sema->waiters, &thread_current ()->elem, thread_less_comparator, NULL);
+      list_push_back (&sema->waiters, &thread_current ()->elem);
 
       thread_block ();
     }
@@ -135,12 +151,16 @@ sema_up (struct semaphore *sema)
 
   struct thread *top_waiter = NULL;
   if (!list_empty (&sema->waiters)) {
-    top_waiter = list_entry (list_pop_front (&sema->waiters),struct thread, elem);
+    struct list_elem * le = list_min (&sema->waiters, thread_less_comparator, NULL);
+    top_waiter = list_entry(le,struct thread, elem);
+    list_remove(le);
+
     thread_unblock (top_waiter);
   }
 
   sema->value++;
 
+  // if(top_waiter!=NULL && MY_get_priority(top_waiter) >= thread_get_priority()){//TODO check >=
   if(top_waiter!=NULL && top_waiter->priority >= thread_current() -> priority){//TODO check >=
     if(intr_context())
       intr_yield_on_return();
@@ -233,9 +253,7 @@ lock_acquire (struct lock *lock)
   //holder is the donnee
   struct thread * hlder =lock->holder;
   struct thread * donor = thread_current();
-  if((hlder!=NULL) && (hlder->priority < thread_get_priority() ) ){
-    // printf("lock->holder->priority:%d\tthread_current()->priority:%d\n",lock->holder->priority,thread_get_priority());
-    // printf("lock->holder ID:%d\n", lock->holder->tid);
+  if((hlder!=NULL) && (MY_get_priority(hlder) < thread_get_priority() ) ){
     get_priority_donation(hlder, thread_current());
     priorDoneeID = hlder->tid;
   }
@@ -245,7 +263,6 @@ lock_acquire (struct lock *lock)
   //Fix Priority Inversion Problem : Reset Donation
   if (hlder!=NULL){
     ASSERT (hlder->tid == priorDoneeID);
-  	// printf("DAX: lock->holder ID:%d\n", lock->holder->tid);
   	forget_priority_donation(hlder,donor);
   }
 
@@ -297,14 +314,6 @@ lock_held_by_current_thread (const struct lock *lock)
 
   return lock->holder == thread_current ();
 }
-
-/* One semaphore in a list. */
-struct semaphore_elem 
-  {
-    struct list_elem elem;              /* List element. */
-    struct semaphore semaphore;         /* This semaphore. */
-    int priority; //variable created by Daksh. TODO: Check Correctness
-  };
 
 /* Initializes condition variable COND.  A condition variable
    allows one piece of code to signal a condition and cooperating
@@ -315,17 +324,6 @@ cond_init (struct condition *cond)
   ASSERT (cond != NULL);
 
   list_init (&cond->waiters);
-}
-
-/* Returns true if value A is less than value B, false
-   otherwise. */
-static bool
-semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
-            void *aux UNUSED) 
-{
-  struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
-  struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
-  return a_t->priority > b_t->priority;//TODO: >= ? I think not. elem,e
 }
 
 
@@ -360,14 +358,10 @@ cond_wait (struct condition *cond, struct lock *lock)
   ASSERT (lock_held_by_current_thread (lock));
   
   sema_init (&waiter.semaphore, 0);
-  //TODO: Check if this would indeed be the priority of this semaphore_elem block
-  waiter.priority = thread_current() -> priority;
-
 
   //pushing a new semaphore_elem called waiter with {semaphore=0} 
   //into the arg conditionalVariable's waiters list; 
-  // list_push_back (&cond->waiters, &waiter.elem);
-  list_insert_ordered (&cond->waiters, &waiter.elem,semaphore_elem_less_comparator, NULL);
+  list_push_back (&cond->waiters, &waiter.elem);
 
   //some other lock that is being passed to me in the args. I am releasing it for now
   lock_release (lock);
@@ -399,9 +393,15 @@ cond_signal (struct condition *cond, struct lock *lock UNUSED)
   ASSERT (!intr_context ());
   ASSERT (lock_held_by_current_thread (lock));
 
-  if (!list_empty (&cond->waiters)) 
-    sema_up (&list_entry (list_pop_front (&cond->waiters),
-                          struct semaphore_elem, elem)->semaphore);
+  if (!list_empty (&cond->waiters)){
+
+    //first elem of supposedly-sorted cond->waiters list
+    struct list_elem * le = list_min (&cond->waiters, semaphore_elem_less_comparator, NULL);
+    
+    struct semaphore_elem * x = list_entry(le,struct semaphore_elem, elem);
+    sema_up (&x->semaphore);
+    list_remove(le);
+  } 
 }
 
 /* Wakes up all threads, if any, waiting on COND (protected by
