@@ -63,6 +63,18 @@ thread_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
   return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
 }
 
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
+  struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
+
+  return thread_less_comparator(list_front(&a_t->semaphore.waiters), list_front(&b_t->semaphore.waiters),NULL);
+}
+
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
    to become positive and then atomically decrements it.
 
@@ -362,18 +374,6 @@ cond_wait (struct condition *cond, struct lock *lock)
   lock_acquire (lock);
 
   //now I would have both the locks: lock and the waiter->semaphore that I created
-}
-
-/* Returns true if value A is less than value B, false
-   otherwise. */
-static bool
-semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
-            void *aux UNUSED) 
-{
-  struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
-  struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
-
-  return thread_less_comparator(list_front(&a_t->semaphore.waiters), list_front(&b_t->semaphore.waiters),NULL);
 }
 
 /* If any threads are waiting on COND (protected by LOCK), then
