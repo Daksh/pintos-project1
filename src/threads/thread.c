@@ -212,7 +212,7 @@ thread_create (const char *name, int priority,
   //thread_get_priority() gets the priority of the currently running thread
   //Lower numbers correspond to lower priorities
   printf("DS: Creating thread '%s' with priority %d\n", name,priority);
-  printf("DS: Current thread '%s' with priority %d\n", thread_current(), thread_get_priority());
+  printf("DS: Current thread '%s' with priority %d\n", thread_current()->name, thread_get_priority());
   if(thread_get_priority() < top_ready->priority){//strictly less than?
     // printf("DAKSH: Yielding the thread with %d priority to the thread with %d prior\n", thread_get_priority(),top_ready->priority);
     printf("DS: Yielding the current thread for new thread\n");
@@ -411,9 +411,10 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   //than the donnee priority, then yield the running thread
   //note, we are not checking if the donnee is blocked or anything
   //TODO: Verify
-  if (thread_get_priority() <= donor->priority)//TODO:CHECK
+  if (thread_get_priority() <= donor->priority){//TODO:CHECK
+    list_sort(&ready_list, thread_priority_comparator, NULL);
     thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
-
+  }
   // printf("DAX: MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
 }
 
@@ -427,6 +428,7 @@ forget_priority_donation (struct thread * donnee,struct thread * donor)
   //TODO: minimal verify
   list_remove (&donor->donorelem);
   //TOOD: Sort readyList? PROBLEM maybe
+  list_sort(&ready_list, thread_priority_comparator, NULL);
 
   if(thread_current() == donnee){
     if (!list_empty (&ready_list)){//TODO: Check, wake up blocked thread?
