@@ -162,8 +162,6 @@ sema_up (struct semaphore *sema)
 
   // if(top_waiter!=NULL && MY_get_priority(top_waiter) >= thread_get_priority()){//TODO check >=
   if(top_waiter!=NULL && top_waiter->priority >= thread_current() -> priority){//TODO check >=
-    printf("in sema_up, top_waiter->priority:%d, MY_get_priority(top_waiter):%d, thread_currentPri:%d\n", top_waiter->priority,MY_get_priority(top_waiter),thread_current() -> priority);
-
     if(intr_context())
       intr_yield_on_return();
     else

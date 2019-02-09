@@ -381,17 +381,17 @@ thread_foreach (thread_action_func *func, void *aux)
 
 int
 MY_get_priority (struct thread * checkThread) 
-{
+{//disable interrupts here?
   if(list_empty (&checkThread->donor_threads))
     return checkThread->priority;
-  // printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
   
   struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
-  // printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
 
-  if(checkThread->priority >= MY_get_priority(topDonor))
+  int topDonor_priority = MY_get_priority(topDonor);
+
+  if(checkThread->priority >= topDonor_priority)
     return checkThread->priority;
-  return MY_get_priority(topDonor);
+  return topDonor_priority;
 }
 
 /* Thread t gets a priority donation 
