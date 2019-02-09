@@ -379,10 +379,10 @@ MY_get_priority (struct thread * checkThread)
 {
   if(list_empty (&checkThread->donor_threads))
     return checkThread->priority;
-  printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
+  // printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
   
   struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
-  printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
+  // printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
 
   if(checkThread->priority >= topDonor->priority)
     return checkThread->priority;
@@ -397,11 +397,12 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   ASSERT (!intr_context ());
   ASSERT (donnee!=NULL);
   ASSERT (donor!=NULL);
-  printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donnee->tid, donnee->priority,donor->tid,donor->priority);
-  
-  printf("BEFORE | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
+  // printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donnee->tid, donnee->priority,donor->tid,donor->priority);
+  printf("DAX: Thread %s donating priority(%d) to %s(having %d)\n", donor->name, donor->priority, donnee->name, donnee->priority);
+
+  // printf("BEFORE | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
   list_insert_ordered (&donnee->donor_threads, &donor->donorelem, d_thread_priority_comparator, NULL);
-  printf("AFTER | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
+  // printf("AFTER | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
 
   //if the current (running) thread priority is lesser
   //than the donnee priority, then yield the running thread
@@ -410,12 +411,13 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   if (thread_get_priority() <= donor->priority)//TODO:CHECK
     thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
 
-  printf("MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
+  printf("DAX: MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
 }
 
 void 
 forget_priority_donation (struct thread * donnee,struct thread * donor)
 {
+  printf("DAX: Thread %s forgetting donated priority given by %s\n", donnee->name, donor->name);
   //donorelem can identify which list does it belong to
   //basically donorelem is the node and we remove it with its
   //prev and next pointers
