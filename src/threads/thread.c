@@ -246,7 +246,7 @@ thread_priority_comparator (const struct list_elem *a_, const struct list_elem *
 { //the one with higher priority should appear first in the list
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  printf("DAX: THREAD1\n");
+//  printf("DAX: THREAD1\n");
   return MY_get_priority(a_t) > MY_get_priority(b_t);
 }
 
@@ -259,7 +259,7 @@ d_thread_priority_comparator (const struct list_elem *a_, const struct list_elem
   struct thread * a_t = list_entry(a_, struct thread, donorelem);
   struct thread * b_t = list_entry(b_, struct thread, donorelem);
   
-  printf("DAX: THREAD2\n");
+  //printf("DAX: THREAD2\n");
   return MY_get_priority(a_t) > MY_get_priority(b_t);
 }
 
