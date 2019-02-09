@@ -80,12 +80,7 @@ sema_down (struct semaphore *sema)
   old_level = intr_disable ();
   while (sema->value == 0) 
     {
-      // DEFN: list_push_back (struct list *list, struct list_elem *elem)
-      // list_push_back (&sema->waiters, &thread_current ()->elem);
-
       //when we are waiting to acquire a lock, we go to the waiters list(&sema->waiters); 
-      //which will be a priority queue
-      // DEFN: list_insert_ordered (struct list *list, struct list_elem *elem,list_less_func *less, void *aux)
       list_insert_ordered (&sema->waiters, &thread_current ()->elem, thread_less_comparator, NULL);
 
       thread_block ();
@@ -233,9 +228,7 @@ lock_acquire (struct lock *lock)
   //holder is the donnee
   struct thread * hlder =lock->holder;
   struct thread * donor = thread_current();
-  if((hlder!=NULL) && (hlder->priority < thread_get_priority() ) ){
-    // printf("lock->holder->priority:%d\tthread_current()->priority:%d\n",lock->holder->priority,thread_get_priority());
-    // printf("lock->holder ID:%d\n", lock->holder->tid);
+  if((hlder!=NULL) && (MY_get_priority(hlder) < thread_get_priority() ) ){
     get_priority_donation(hlder, thread_current());
     priorDoneeID = hlder->tid;
   }
@@ -245,7 +238,6 @@ lock_acquire (struct lock *lock)
   //Fix Priority Inversion Problem : Reset Donation
   if (hlder!=NULL){
     ASSERT (hlder->tid == priorDoneeID);
-  	// printf("DAX: lock->holder ID:%d\n", lock->holder->tid);
   	forget_priority_donation(hlder,donor);
   }
 
