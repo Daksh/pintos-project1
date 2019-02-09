@@ -235,7 +235,7 @@ thread_block (void)
   schedule ();
 }
 
-/* Returns true if value A is less than value B, false
+/* Returns true if value A is more than value B, false
    otherwise. */
 static bool
 thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
@@ -243,10 +243,12 @@ thread_priority_comparator (const struct list_elem *a_, const struct list_elem *
 {
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+  // return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+  return MY_get_priority(a_t) > MY_get_priority(b_t);//the one with higher priority should appear first in the list
 }
 
-/* Returns true if value A is less than value B, false
+
+/* Returns true if value A is more than value B, false
    otherwise. */
 static bool
 d_thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
@@ -254,7 +256,7 @@ d_thread_priority_comparator (const struct list_elem *a_, const struct list_elem
 {
   struct thread * a_t = list_entry(a_, struct thread, donorelem);
   struct thread * b_t = list_entry(b_, struct thread, donorelem);
-  // return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+   return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
   return MY_get_priority(a_t) > MY_get_priority(b_t);//the one with higher priority should appear first in the list
 }
 
