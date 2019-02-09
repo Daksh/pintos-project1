@@ -385,14 +385,11 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
 void 
 forget_priority_donation (struct thread * donee,struct thread * donor)
 {
-  // printf("Forgetting priority donation for thread:%d\tprior:%d\toriginal_prior:%d\n", t->tid,t->d_priority,t->priority);
-  t->d_priority = 0;
-
   //donorelem can identify which list does it belong to
   //basically donorelem is the node and we remove it with its
   //prev and next pointers
   //TODO: minimal verify
-  list_remove (&donor()->donorelem);
+  list_remove (&donor->donorelem);
   //TOOD: Sort readyList? PROBLEM maybe
 
   if(thread_current() == t){
@@ -422,7 +419,7 @@ int
 thread_get_priority (void) 
 {
   struct thread * curThread = thread_current();
-  if(list_empty (curThread->donor_threads))
+  if(list_empty (&curThread->donor_threads))
     return curThread->priority;
   
   struct thread * topDonor = list_entry (list_pop_front (&curThread->donor_threads), struct thread, elem);
