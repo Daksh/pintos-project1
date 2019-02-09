@@ -246,7 +246,7 @@ thread_priority_comparator (const struct list_elem *a_, const struct list_elem *
 {
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+  return MY_get_priority(a_t) > MY_get_priority(b_t);
 }
 
 /* Returns true if value A is less than value B, false
