@@ -229,22 +229,22 @@ lock_acquire (struct lock *lock)
 
   //Fix Priority Inversion Problem : DONATE to Donatee
   int priorDoneeID = -1;
-  if((lock->holder!=NULL) && (lock->holder->priority < thread_get_priority() ) ){
+
+  struct thread * hlder =lock->holder;
+  if((hlder!=NULL) && (hlder->priority < thread_get_priority() ) ){
     // printf("lock->holder->priority:%d\tthread_current()->priority:%d\n",lock->holder->priority,thread_get_priority());
     // printf("lock->holder ID:%d\n", lock->holder->tid);
-    get_priority_donation(lock->holder, thread_get_priority());
-    priorDoneeID = lock->holder->tid;
+    get_priority_donation(hlder, thread_get_priority());
+    priorDoneeID = hlder->tid;
   }
 
   sema_down (&lock->semaphore);
 
   //Fix Priority Inversion Problem : Reset Donation
-  if (lock->holder!=NULL){
-    ASSERT (lock->holder->tid == priorDoneeID);
+  if (hlder!=NULL){
+    ASSERT (hlder->tid == priorDoneeID);
   	// printf("DAX: lock->holder ID:%d\n", lock->holder->tid);
-  	forget_priority_donation(lock->holder);
-  }else{
-    printf("Lock Holder is NULL now :| and priorDoneeID is %d\t\n", priorDoneeID);
+  	forget_priority_donation(hlder);
   }
 
   lock->holder = thread_current ();
