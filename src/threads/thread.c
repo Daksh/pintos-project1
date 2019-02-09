@@ -368,6 +368,7 @@ MY_get_priority (struct thread * checkThread)
 {
   if(list_empty (&checkThread->donor_threads))
     return checkThread->priority;
+  printf("donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
   
   struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, elem);
   printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
@@ -386,7 +387,9 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   ASSERT (donor!=NULL);
   printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donnee->tid, donnee->priority,donor->tid,donor->priority);
   
+  printf("BEFORE | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
   list_insert_ordered (&donnee->donor_threads, &donor->donorelem, thread_priority_comparator, NULL);
+  printf("AFTER | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
 
   //if the current (running) thread priority is lesser
   //than the donnee priority, then yield the running thread
