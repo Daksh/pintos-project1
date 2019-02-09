@@ -262,7 +262,9 @@ d_thread_priority_comparator (const struct list_elem *a_, const struct list_elem
   struct thread * b_t = list_entry(b_, struct thread, donorelem);
   
   // return a_t->priority > b_t->priority;
+
   return MY_get_priority(a_t) > MY_get_priority(b_t);
+  //^ neutral. Does not pass/fail any cases
 }
 
 /* Transitions a blocked thread T to the ready-to-run state.
@@ -384,17 +386,17 @@ thread_foreach (thread_action_func *func, void *aux)
 
 int
 MY_get_priority (struct thread * checkThread) 
-{
+{//would we need to disable interrupts here?
   if(list_empty (&checkThread->donor_threads))
     return checkThread->priority;
-  // printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
   
   struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
-  // printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
 
-  if(checkThread->priority >= MY_get_priority(topDonor))
+  int topDonor_priority = MY_get_priority(topDonor);
+
+  if(checkThread->priority >= topDonor_priority)
     return checkThread->priority;
-  return MY_get_priority(topDonor);
+  return topDonor_priority;
 }
 
 /* Thread t gets a priority donation 
