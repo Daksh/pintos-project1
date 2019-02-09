@@ -378,7 +378,7 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   //than the donnee priority, then yield the running thread
   //note, we are not checking if the donnee is blocked or anything
   //TODO: Verify
-  if (thread_get_priority() <= donnee->thread_get_priority())
+  if (thread_get_priority() <= donor->priority)//TODO:CHECK
     thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
 }
 
@@ -392,7 +392,7 @@ forget_priority_donation (struct thread * donee,struct thread * donor)
   list_remove (&donor->donorelem);
   //TOOD: Sort readyList? PROBLEM maybe
 
-  if(thread_current() == t){
+  if(thread_current() == &donee){
     if (!list_empty (&ready_list)){//TODO: Check, wake up blocked thread?
       struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
       if(thread_get_priority() <= top_ready->priority)
