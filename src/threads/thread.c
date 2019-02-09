@@ -402,7 +402,7 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   printf("BEFORE | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
   list_insert_ordered (&donnee->donor_threads, &donor->donorelem, d_thread_priority_comparator, NULL);
   printf("AFTER | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
-  printf("test: %d\n", );
+//  printf("test: %d\n", );
 
   //if the current (running) thread priority is lesser
   //than the donnee priority, then yield the running thread
