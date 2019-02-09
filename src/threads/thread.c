@@ -241,15 +241,25 @@ thread_block (void)
 /* Returns true if value A is less than value B, false
    otherwise. */
 static bool
+mod_thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{//the one with higher priority should appear first in the list
+  struct thread * a_t = list_entry(a_, struct thread, elem);
+  struct thread * b_t = list_entry(b_, struct thread, elem);
+  
+  return MY_get_priority(a_t) > MY_get_priority(b_t); 
+  // ^ doing this causes condvar, donate-lower,donate-multiple, donate-one to fail
+}
+
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
 thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
             void *aux UNUSED) 
 {//the one with higher priority should appear first in the list
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  // return a_t->priority > b_t->priority;
-  
-  return MY_get_priority(a_t) > MY_get_priority(b_t); 
-  // ^ doing this causes condvar, donate-lower,donate-multiple, donate-one to fail
+  return a_t->priority > b_t->priority;
 }
 
 /* Returns true if value A is less than value B, false
@@ -289,7 +299,7 @@ thread_unblock (struct thread *t)
 
   //We need to add the unblocked thread in ready_list, regardless of whether or not 
   // it will be scheduled right now
-  list_insert_ordered (&ready_list, &t->elem, thread_priority_comparator, NULL);
+  list_insert_ordered (&ready_list, &t->elem, mod_thread_priority_comparator, NULL);
 
   t->status = THREAD_READY;
   intr_set_level (old_level);
