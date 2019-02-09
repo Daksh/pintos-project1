@@ -422,7 +422,7 @@ thread_get_priority (void)
   if(list_empty (&curThread->donor_threads))
     return curThread->priority;
   
-  struct thread * topDonor = list_entry (list_pop_front (&curThread->donor_threads), struct thread, elem);
+  struct thread * topDonor = list_entry (list_front (&curThread->donor_threads), struct thread, elem);
   if(curThread->priority >= topDonor->priority)
     return curThread->priority;
   return topDonor -> priority;
