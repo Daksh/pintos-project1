@@ -403,11 +403,8 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   ASSERT (donnee!=NULL);
   ASSERT (donor!=NULL);
   // printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donnee->tid, donnee->priority,donor->tid,donor->priority);
-  // printf("DAX: Thread %s donating priority(%d) to %s(having %d)\n", donor->name, donor->priority, donnee->name, donnee->priority);
 
-  // printf("BEFORE | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
   list_insert_ordered (&donnee->donor_threads, &donor->donorelem, d_thread_priority_comparator, NULL);
-  // printf("AFTER | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
 
   //if the current (running) thread priority is lesser
   //than the donnee priority, then yield the running thread
