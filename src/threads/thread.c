@@ -440,7 +440,7 @@ thread_set_priority (int new_priority)
   thread_current ()->priority = new_priority;
 
   if (!list_empty (&ready_list)){
-    struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, donorelem);
+    struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
     if(thread_get_priority() < top_ready->priority)
       thread_yield();  
   }
