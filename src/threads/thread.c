@@ -299,7 +299,8 @@ thread_unblock (struct thread *t)
 
   //We need to add the unblocked thread in ready_list, regardless of whether or not 
   // it will be scheduled right now
-  list_insert_ordered (&ready_list, &t->elem, mod_thread_priority_comparator, NULL);
+  list_insert_ordered (&ready_list, &t->elem, thread_priority_comparator, NULL);
+  //using modified comparator breaks the donat-one
 
   t->status = THREAD_READY;
   intr_set_level (old_level);
@@ -425,7 +426,7 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   //than the donnee priority, then yield the running thread
   //note, we are not checking if the donnee is blocked or anything
   if (thread_get_priority() <= MY_get_priority(donor)){//TODO: maybe
-    list_sort(&ready_list, thread_priority_comparator, NULL);
+    list_sort(&ready_list, mod_thread_priority_comparator, NULL);
     thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
   }
   // printf("DAX: MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
@@ -441,7 +442,7 @@ forget_priority_donation (struct thread * donnee,struct thread * donor)
   //TODO: minimal verify
   list_remove (&donor->donorelem);
   //TOOD: Sort readyList? PROBLEM maybe
-  list_sort(&ready_list, thread_priority_comparator, NULL);
+  list_sort(&ready_list, mod_thread_priority_comparator, NULL);
 
   if(thread_current() == donnee){
     if (!list_empty (&ready_list)){//TODO: Check, wake up blocked thread?
