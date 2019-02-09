@@ -51,6 +51,22 @@ sema_init (struct semaphore *sema, unsigned value)
   list_init (&sema->waiters);
 }
 
+int get_sema_priority(struct semaphore_elem *sema_e)
+{
+  struct thread *top_waiter = NULL;
+  // top_waiter = list_entry (list_begin (&sema_e->waiters),struct thread, elem); 
+  // struct semaphore * sema = &sema_e->semaphore ;
+  if(!list_empty(&sema_e->waiters)) 
+  // top_waiter = list_entry (list_begin (&sema->waiters),struct thread, elem);  
+  top_waiter = list_entry (list_begin (&sema_e),struct thread, elem);  
+  // sema_up (&list_entry ( list_pop_front (&cond->waiters),
+  //                         struct semaphore_elem, elem)->semaphore);  
+  int MAX_Prior = top_waiter->priority;
+  sema_e->priority = MAX_Prior;
+  return MAX_Prior;
+}
+
+
 /* Returns true if value A is less than value B, false
    otherwise. */
 static bool
@@ -329,7 +345,7 @@ semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_el
 //  printf("DAX: SYNCH2\n");
 
   //Cannot do this because MY_get_priority needs a thread* not a semaphore_elem*
-  return a_t->priority > b_t->priority;//TODO: >= ? I think not. elem,e
+  return get_sema_priority(a_t) > get_sema_priority(b_t);//TODO: >= ? I think not. elem,e
 }
 
 
