@@ -379,10 +379,10 @@ MY_get_priority (struct thread * checkThread)
 {
   if(list_empty (&checkThread->donor_threads))
     return checkThread->priority;
-  //printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
+  printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
   
   struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
-  //printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
+  printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
 
   if(checkThread->priority >= topDonor->priority)
     return checkThread->priority;
@@ -397,12 +397,11 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   ASSERT (!intr_context ());
   ASSERT (donnee!=NULL);
   ASSERT (donor!=NULL);
-  // printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donnee->tid, donnee->priority,donor->tid,donor->priority);
+  printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donnee->tid, donnee->priority,donor->tid,donor->priority);
   
-  // printf("BEFORE | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
+  printf("BEFORE | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
   list_insert_ordered (&donnee->donor_threads, &donor->donorelem, d_thread_priority_comparator, NULL);
-  // printf("AFTER | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
-//  printf("test: %d\n", );
+  printf("AFTER | donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
 
   //if the current (running) thread priority is lesser
   //than the donnee priority, then yield the running thread
@@ -411,7 +410,7 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   if (thread_get_priority() <= donor->priority)//TODO:CHECK
     thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
 
-  // printf("MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
+  printf("MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
 }
 
 void 
@@ -450,15 +449,6 @@ thread_set_priority (int new_priority)
 int
 thread_get_priority (void) 
 {
-  // struct thread * curThread = thread_current();
-  // if(list_empty (&curThread->donor_threads))
-  //   return curThread->priority;
-  
-  // struct thread * topDonor = list_entry (list_front (&curThread->donor_threads), struct thread, elem);
-  // printf("Getting Priority of ThreadID:%d, priority:%d, topDonorPriority:%d\n", curThread->tid, curThread->priority,topDonor->priority);
-  // if(curThread->priority >= topDonor->priority)
-  //   return curThread->priority;
-  // return topDonor -> priority;
   return(MY_get_priority(thread_current()));
 }
 
