@@ -59,6 +59,7 @@ thread_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
 {
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
+  printf("DAX: SYNCH1\n");
   return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
 }
 
@@ -325,6 +326,7 @@ semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_el
 {
   struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
   struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
+  printf("DAX: SYNCH2\n");
   return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
 }
 
