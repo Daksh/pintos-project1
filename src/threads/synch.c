@@ -59,7 +59,7 @@ thread_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
 {
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  //printf("DAX: SYNCH1\n");
+
   return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
 }
 
@@ -82,8 +82,7 @@ sema_down (struct semaphore *sema)
   while (sema->value == 0) 
     {
       //when we are waiting to acquire a lock, we go to the waiters list(&sema->waiters); 
-      //sema->waiters is a list(priority queue) of threads.
-      list_insert_ordered (&sema->waiters, &thread_current ()->elem, thread_less_comparator, NULL);
+      list_push_back (&sema->waiters, &thread_current ()->elem);
 
       thread_block ();
     }
@@ -132,7 +131,10 @@ sema_up (struct semaphore *sema)
 
   struct thread *top_waiter = NULL;
   if (!list_empty (&sema->waiters)) {
-    top_waiter = list_entry (list_pop_front (&sema->waiters),struct thread, elem);
+    struct list_elem * le = list_min (&sema->waiters, semaphore_elem_less_comparator, NULL);
+    top_waiter = list_entry(le,struct thread, elem);
+    list_remove(le);
+
     thread_unblock (top_waiter);
   }
 
@@ -240,7 +242,6 @@ lock_acquire (struct lock *lock)
   //Fix Priority Inversion Problem : Reset Donation
   if (hlder!=NULL){
     ASSERT (hlder->tid == priorDoneeID);
-  	// printf("DAX: lock->holder ID:%d\n", lock->holder->tid);
   	forget_priority_donation(hlder,donor);
   }
 
@@ -391,9 +392,13 @@ cond_signal (struct condition *cond, struct lock *lock UNUSED)
   ASSERT (lock_held_by_current_thread (lock));
 
   if (!list_empty (&cond->waiters)){
+
+    //first elem of supposedly-sorted cond->waiters list
     struct list_elem * le = list_min (&cond->waiters, semaphore_elem_less_comparator, NULL);
+    
     struct semaphore_elem * x = list_entry(le,struct semaphore_elem, elem);
     sema_up (&x->semaphore);
+    list_remove(le);
   } 
 }
 
