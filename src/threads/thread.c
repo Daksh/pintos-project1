@@ -379,7 +379,7 @@ MY_get_priority (struct thread * checkThread)
 {
   if(list_empty (&checkThread->donor_threads))
     return checkThread->priority;
-  printf("donne->donor_threads size:%d\n", list_size(&donnee->donor_threads));
+  printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
   
   struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
   printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
