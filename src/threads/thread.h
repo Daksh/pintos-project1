@@ -88,7 +88,9 @@ struct thread
     char name[16];                      /* Name (for debugging purposes). */
     uint8_t *stack;                     /* Saved stack pointer. */
     int priority;                       /* Priority. */
-    int d_priority;                     /* Donated Priority*/
+    struct list donor_threads;          /* List of threads that have donated their priority. */
+    struct list_elem donorelem;
+
     struct list_elem allelem;           /* List element for all threads list. */
     int64_t minStartTime; //time as returned by timer_ticks
 
@@ -145,8 +147,8 @@ void thread_foreach (thread_action_func *, void *);
 int thread_get_priority (void);
 void thread_set_priority (int);
 
-void get_priority_donation (struct thread *, int);
-void forget_priority_donation (struct thread *);
+void get_priority_donation (struct thread *, struct thread *);
+void forget_priority_donation (struct thread *,struct thread *);
 
 int thread_get_nice (void);
 void thread_set_nice (int);
