@@ -246,7 +246,8 @@ thread_priority_comparator (const struct list_elem *a_, const struct list_elem *
 {
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
-  return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+  // return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+  return MY_get_priority(a_t)>MY_get_priority(b_t);//the one with higher priority should appear first in the list  
 }
 
 /* Returns true if value A is less than value B, false
@@ -259,7 +260,8 @@ d_thread_priority_comparator (const struct list_elem *a_, const struct list_elem
   struct thread * b_t = list_entry(b_, struct thread, donorelem);
   
   //the one with higher priority should appear first in the list
-  return a_t->priority > b_t->priority;//do we need to change this to use MY_get
+  // return a_t->priority > b_t->priority;//do we need to change this to use MY_get
+  return MY_get_priority(a_t)>MY_get_priority(b_t);
 }
 
 /* Transitions a blocked thread T to the ready-to-run state.
@@ -378,20 +380,29 @@ thread_foreach (thread_action_func *func, void *aux)
       func (t, aux);
     }
 }
-
+//chance of deadlock
 int
 MY_get_priority (struct thread * checkThread) 
 {
   if(list_empty (&checkThread->donor_threads))
     return checkThread->priority;
   // printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
-  
-  struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
+  // list_min (struct list *list, list_less_func *less, void *aux)
+  // struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
+    // #define list_entry(LIST_ELEM, STRUCT, MEMBER)           \
+    //     ((STRUCT *) ((uint8_t *) &(LIST_ELEM)->next     \
+    //                  - offsetof (STRUCT, MEMBER.next)))
+
+    struct list_elem * top_le = list_min(&checkThread->donor_threads,d_thread_priority_comparator,NULL);
+    struct thread * topDonor = list_entry(top_le,struct thread,donorelem);
+    // struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
+
   // printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
 
-  if(checkThread->priority >= MY_get_priority(topDonor))
+  if(checkThread->priority > MY_get_priority(topDonor))
     return checkThread->priority;
-  return MY_get_priority(topDonor);
+  else
+    return MY_get_priority(topDonor);
 }
 
 /* Thread t gets a priority donation 
@@ -409,7 +420,9 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   //if the current (running) thread priority is lesser
   //than the donnee priority, then yield the running thread
   //note, we are not checking if the donnee is blocked or anything
-  if (thread_get_priority() <= MY_get_priority(donor)){//TODO: maybe
+  if (thread_get_priority() < MY_get_priority(donor)){//TODO: maybe
+    //checking if list is empty
+    if(!list_empty(&ready_list))//don't know if required
     list_sort(&ready_list, thread_priority_comparator, NULL);
     thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
   }
@@ -424,15 +437,22 @@ forget_priority_donation (struct thread * donnee,struct thread * donor)
   //basically donorelem is the node and we remove it with its
   //prev and next pointers
   //TODO: minimal verify
+  
+  //could be causing problem
+  if(!list_empty(&donnee->donor_threads))
   list_remove (&donor->donorelem);
   //TOOD: Sort readyList? PROBLEM maybe
+  if(!list_empty(&ready_list))
   list_sort(&ready_list, thread_priority_comparator, NULL);
 
   if(thread_current() == donnee){
     if (!list_empty (&ready_list)){//TODO: Check, wake up blocked thread?
-      struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, donorelem);
-      if(thread_get_priority() <= MY_get_priority(top_ready))
-        thread_yield();  
+      // struct list_elem * top_ready_elem = list_min (&ready_list, thread_less_comparator, NULL);
+      // struct thread * top_ready = list_entry(top_ready_elem,struct thread, donorelem);
+      // struct thread * top_ready = list_entry(top_ready_elem,struct thread, donorelem);      
+      struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, donorelem);//I 
+      if(thread_get_priority() < MY_get_priority(top_ready))
+        thread_yield();
     }    
   }
 }
@@ -612,6 +632,7 @@ next_thread_to_run (void)
   if (list_empty (&ready_list))
     return idle_thread;
   else{
+      list_sort(&ready_list, thread_priority_comparator, NULL);
     return list_entry (list_pop_front (&ready_list), struct thread, elem);
   }
 }

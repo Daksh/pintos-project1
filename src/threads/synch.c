@@ -65,8 +65,26 @@ static bool
 thread_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
             void *aux UNUSED) 
 {
+
+// struct list_elem *
+// list_min (struct list *list, list_less_func *less, void *aux)
+
+  //   struct list_elem * le = list_min (&sema->waiters, thread_less_comparator, NULL);
+  //   top_waiter = list_entry(le,struct thread, elem);
+
+  // struct thread * a_t = list_entry(a_, struct thread, elem);
+  // struct thread * b_t = list_entry(b_, struct thread, elem);
+// list_entry(LIST_ELEM, STRUCT, MEMBER)           \
+//         ((STRUCT *) ((uint8_t *) &(LIST_ELEM)->next     \
+//                      - offsetof (STRUCT, MEMBER.next)))
+
+  // struct  
+
+  // struct list_elem * a_t_el = list_min(a_->)
+
   struct thread * a_t = list_entry(a_, struct thread, elem);
   struct thread * b_t = list_entry(b_, struct thread, elem);
+
   return MY_get_priority(a_t) > MY_get_priority(b_t);//TODO: >= ? I think not. elem,e
 }
 
@@ -76,9 +94,41 @@ static bool
 semaphore_elem_less_comparator (const struct list_elem *a_, const struct list_elem *b_,
             void *aux UNUSED) 
 {
-  struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
-  struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
-  return thread_less_comparator(list_front(&a_t->semaphore.waiters), list_front(&b_t->semaphore.waiters),NULL);
+
+  // find thread with maximum prior in semaphore of a_ =t_A, do the same with b_ and then return if t_A > t_B
+  
+  // printf("donne->donor_threads size:%d\n", list_size(&checkThread->donor_threads));
+  // list_min (struct list *list, list_less_func *less, void *aux)
+  // struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
+    // #define list_entry(LIST_ELEM, STRUCT, MEMBER)           \
+    //     ((STRUCT *) ((uint8_t *) &(LIST_ELEM)->next     \
+    //                  - offsetof (STRUCT, MEMBER.next)))
+
+    // struct list_elem * top_le = list_min(&checkThread->donor_threads,d_thread_priority_comparator,NULL);
+    // struct thread * topDonor = list_entry(top_le,struct thread,donorelem);
+    
+    // struct thread * topDonor = list_entry (list_front (&checkThread->donor_threads), struct thread, donorelem);
+
+  // printf("Getting Priority of ThreadID:%d, priority:%d, topDonor{ID:%d, Priority:%d}\n", checkThread->tid, checkThread->priority,topDonor->tid,topDonor->priority);
+
+  struct semaphore_elem * s_e_A = list_entry(a_,struct semaphore_elem, elem);
+  struct semaphore_elem * s_e_B = list_entry(b_,struct semaphore_elem, elem);
+
+  struct semaphore sema_A = s_e_A->semaphore;
+  struct semaphore sema_B = s_e_B->semaphore;
+
+
+
+    // struct semaphore_elem * x = list_entry(le,struct semaphore_elem, elem);
+    // sema_up (&x->semaphore);
+
+  struct list_elem * lea = list_min (&sema_A.waiters, thread_less_comparator, NULL);
+  struct list_elem * leb = list_min (&sema_B.waiters, thread_less_comparator, NULL);
+  // list_min (&sema->waiters, thread_less_comparator, NULL);
+  // struct semaphore_elem * a_t = list_entry(a_, struct semaphore_elem, elem);
+  // struct semaphore_elem * b_t = list_entry(b_, struct semaphore_elem, elem);
+
+  return thread_less_comparator(lea,leb,NULL);
 }
 
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
@@ -158,7 +208,7 @@ sema_up (struct semaphore *sema)
 
   sema->value++;
 
-  if(top_waiter!=NULL && top_waiter->priority >= thread_current() -> priority){//TODO check >=
+  if(top_waiter!=NULL && top_waiter->priority > thread_current() -> priority){//TODO check >=
     if(intr_context())
       intr_yield_on_return();
     else
@@ -250,9 +300,12 @@ lock_acquire (struct lock *lock)
   //holder is the donnee
   struct thread * hlder =lock->holder;
   struct thread * donor = thread_current();
+  
   if((hlder!=NULL) && (MY_get_priority(hlder) < thread_get_priority() ) ){
-    get_priority_donation(hlder, thread_current());
+    
+    //setting priorDoneeID = hlder->TID
     priorDoneeID = hlder->tid;
+    get_priority_donation(hlder, thread_current());
   }
 
   sema_down (&lock->semaphore);
