@@ -214,7 +214,7 @@ thread_create (const char *name, int priority,
   sf->eip = switch_entry;
   sf->ebp = 0;
 
-  /* Add to run queue. */
+  /* Add to ready_list. */
   thread_unblock (t); //This is what puts the thread in ready_list. CHECK THIS OUT
   //TODO: Do we ask the current thread to yield (maybe), HERE?
   //or do we add it in thread_unblock
@@ -421,6 +421,7 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   ASSERT (!intr_context ());
   ASSERT (donnee!=NULL);
   ASSERT (donor!=NULL);
+  //donee = holder
   // printf("get_priority_donation donneeID:%d donneePrior:%d, donorID:%d donorPrior:%d\n", donnee->tid, donnee->priority,donor->tid,donor->priority);
 
   list_insert_ordered (&donnee->donor_threads, &donor->donorelem, d_thread_priority_comparator, NULL);
@@ -428,10 +429,25 @@ get_priority_donation (struct thread * donnee, struct thread * donor)
   //if the current (running) thread priority is lesser
   //than the donnee priority, then yield the running thread
   //note, we are not checking if the donnee is blocked or anything
-  if (thread_get_priority() < MY_get_priority(donor)){//TODO: maybe
+  /*
+  Won't current thread be the donor?
+  */
+
+
+  // if (thread_get_priority() < MY_get_priority(donor)){//TODO: maybe
+
+  /*
+    Shouldn't we check if donnee's prior is greater than current thread's prior
+
+  */
+
+
+    // if (thread_get_priority() < MY_get_priority(donor)){//TODO: maybe
+    if (thread_get_priority() < MY_get_priority(donnee)){//TODO: maybe      
     //checking if list is empty
-    if(!list_empty(&ready_list))//don't know if required
-    list_sort(&ready_list, thread_priority_comparator, NULL);
+    // if(!list_empty(&ready_list))//don't know if required
+      //list_sort(&ready_list, thread_priority_comparator, NULL);
+      //why sort?
     thread_yield();//TODO: PROBLEM sort the list first? cause the priority changed
   }
   // printf("DAX: MY_get_priority: for donnee thread(%d) is %d\n", donnee->tid, MY_get_priority(donnee));
@@ -447,18 +463,23 @@ forget_priority_donation (struct thread * donnee,struct thread * donor)
   //TODO: minimal verify
   
   //could be causing problem
-  if(!list_empty(&donnee->donor_threads))
-  list_remove (&donor->donorelem);
+
+  // if(!list_empty(&donnee->donor_threads))
+  // list_remove (&donor->donorelem);
+
   //TOOD: Sort readyList? PROBLEM maybe
+  
   if(!list_empty(&ready_list))
   list_sort(&ready_list, thread_priority_comparator, NULL);
 
+  // if current thread is donnee
   if(thread_current() == donnee){
     if (!list_empty (&ready_list)){//TODO: Check, wake up blocked thread?
       // struct list_elem * top_ready_elem = list_min (&ready_list, thread_less_comparator, NULL);
       // struct thread * top_ready = list_entry(top_ready_elem,struct thread, donorelem);
       // struct thread * top_ready = list_entry(top_ready_elem,struct thread, donorelem);      
       struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, donorelem);//I 
+      //check if prior of donnee is less than prior of top_ready
       if(thread_get_priority() < MY_get_priority(top_ready))
         thread_yield();
     }    

@@ -151,7 +151,6 @@ sema_down (struct semaphore *sema)
     {
       //when we are waiting to acquire a lock, we go to the waiters list(&sema->waiters); 
       list_push_back (&sema->waiters, &thread_current ()->elem);
-
       thread_block ();
     }
   sema->value--;
@@ -187,6 +186,8 @@ sema_try_down (struct semaphore *sema)
 /* Up or "V" operation on a semaphore.  Increments SEMA's value
    and wakes up one thread of those waiting for SEMA, if any.
 
+  WAke 
+
    This function may be called from an interrupt handler. */
 void
 sema_up (struct semaphore *sema) 
@@ -199,16 +200,37 @@ sema_up (struct semaphore *sema)
 
   struct thread *top_waiter = NULL;
   if (!list_empty (&sema->waiters)) {
+    
     struct list_elem * le = list_min (&sema->waiters, thread_less_comparator, NULL);
+    
     top_waiter = list_entry(le,struct thread, elem);
+    
+    struct thread * cur = thread_current();
+
+    struct list_elem * de = &cur->donorelem;
+    
+
+    
     list_remove(le);
+
+    // If donorelem part of the donor list of current threads
+    //TODO: Check
+    if(!list_empty(&cur->donor_threads))
+    {
+      printf("Size of list is %d\n",list_size(&cur->donor_threads) );
+        if(de != NULL && de->prev != NULL && de->next != NULL)          
+          list_remove(de);// failed tests goes 8 to 18        
+      printf("Size of list is %d\n",list_size(&cur->donor_threads) );      
+
+    }
 
     thread_unblock (top_waiter);
   }
 
   sema->value++;
 
-  if(top_waiter!=NULL && top_waiter->priority > thread_current() -> priority){//TODO check >=
+  // Check, causing fails to increase from 3 to 7
+  if(top_waiter!=NULL && MY_get_priority(top_waiter) > thread_get_priority() ){//TODO check >=
     if(intr_context())
       intr_yield_on_return();
     else
@@ -217,6 +239,7 @@ sema_up (struct semaphore *sema)
 
   intr_set_level (old_level);
 }
+
 
 static void sema_test_helper (void *sema_);
 
@@ -300,20 +323,25 @@ lock_acquire (struct lock *lock)
   //holder is the donnee
   struct thread * hlder =lock->holder;
   struct thread * donor = thread_current();
-  
-  if((hlder!=NULL) && (MY_get_priority(hlder) < thread_get_priority() ) ){
-    
+  int flag_donated =0;
+
+  // if lock has a holder and holder's priority is more than current thread's priority
+  // if((hlder!=NULL) && (MY_get_priority(hlder) < thread_get_priority() ) ){
+  if((hlder!=NULL) ){    
     //setting priorDoneeID = hlder->TID
     priorDoneeID = hlder->tid;
+    printf("%d initial priorDoneeID \n",priorDoneeID );
     get_priority_donation(hlder, thread_current());
+    flag_donated =1;
   }
 
-  sema_down (&lock->semaphore);
+  sema_down (&lock->semaphore); 
 
   //Fix Priority Inversion Problem : Reset Donation
   if (hlder!=NULL){
-    ASSERT (hlder->tid == priorDoneeID);
-  	forget_priority_donation(hlder,donor);
+    printf("%d hldr->TID\n",hlder->tid );
+    // ASSERT (hlder->tid == priorDoneeID);
+  	forget_priority_donation(hlder,donor);//remove donor
   }
 
   lock->holder = thread_current ();
@@ -348,6 +376,8 @@ void
 lock_release (struct lock *lock) 
 {
   ASSERT (lock != NULL);
+  
+  //Current thread is the lock holder
   ASSERT (lock_held_by_current_thread (lock));
 
   lock->holder = NULL;
