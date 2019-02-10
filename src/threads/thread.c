@@ -104,6 +104,18 @@ thread_init (void)
   initial_thread->tid = allocate_tid ();
 }
 
+/* Returns true if value A is less than value B, false
+   otherwise. */
+static bool
+thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
+            void *aux UNUSED) 
+{
+  struct thread * a_t = list_entry(a_, struct thread, elem);
+  struct thread * b_t = list_entry(b_, struct thread, elem);
+  // return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
+  return MY_get_priority(a_t)>MY_get_priority(b_t);//the one with higher priority should appear first in the list  
+}
+
 /* Starts preemptive thread scheduling by enabling interrupts.
    Also creates the idle thread. */
 void
@@ -208,7 +220,13 @@ thread_create (const char *name, int priority,
   //or do we add it in thread_unblock
 
   //TODO: Create this into a function cause this would be called at multiple times
-  struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
+
+  //struct list_elem * leb = list_min (&sema_B.waiters, thread_less_comparator, NULL);
+
+
+  struct list_elem * top_ready_ele = list_min(&ready_list,thread_priority_comparator, NULL);
+  struct thread *top_ready=list_entry(top_ready_ele,struct thread, elem);
+
   //thread_get_priority() gets the priority of the currently running thread
   //Lower numbers correspond to lower priorities
   // printf("DS: Creating thread '%s' with priority %d\n", name,priority);
@@ -238,17 +256,7 @@ thread_block (void)
   schedule ();
 }
 
-/* Returns true if value A is less than value B, false
-   otherwise. */
-static bool
-thread_priority_comparator (const struct list_elem *a_, const struct list_elem *b_,
-            void *aux UNUSED) 
-{
-  struct thread * a_t = list_entry(a_, struct thread, elem);
-  struct thread * b_t = list_entry(b_, struct thread, elem);
-  // return a_t->priority > b_t->priority;//the one with higher priority should appear first in the list
-  return MY_get_priority(a_t)>MY_get_priority(b_t);//the one with higher priority should appear first in the list  
-}
+
 
 /* Returns true if value A is less than value B, false
    otherwise. */
@@ -464,7 +472,12 @@ thread_set_priority (int new_priority)
   thread_current ()->priority = new_priority;
 
   if (!list_empty (&ready_list)){
-    struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
+
+    struct list_elem * top_ready_ele = list_min(&ready_list,thread_priority_comparator, NULL);
+  struct thread *top_ready=list_entry(top_ready_ele,struct thread, elem);
+
+
+    //struct thread * top_ready = list_entry(list_begin(&ready_list),struct thread, elem);
     if(thread_get_priority() < MY_get_priority(top_ready))
       thread_yield();  
   }
